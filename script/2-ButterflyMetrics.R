@@ -76,24 +76,25 @@ buttab2 <- buttraw[3:86, 16:119]
 names(buttab2) <- buttsp$SpeciesCode[match(names(buttab2), buttsp$CommonNames)]
 buttab <- cbind(buttab1, buttab2)
 buttab[15:118] <- sapply(buttab[15:118],as.numeric)
-
+# abundance
 buttab_site <- buttab %>%
   group_by(SWP) %>% 
   summarise(abund = sum(across(HESSP:UNKSP), na.rm = T))
-
+# avg. diversity
 buttdiv_site <- buttdate %>%
   group_by(SWP) %>%
   summarise_at(vars(Shannon, Even, Simpson), "mean", na.rm = T)
 butt_site <- inner_join(buttab_site, buttdiv_site)
-
+# species richness
 butt_rich <- buttab[, c(1,15:118)]
 butt_rich <- butt_rich %>%
   group_by(SWP) %>%
   summarise(across(HESSP:UNKSP, ~sum(.x, na.rm = TRUE)))
 butt_rich <- butt_rich[,2:105]
 spec_site <- as.data.frame(specnumber(butt_rich))
-butt_site <- cbind(butt_site, spec_site)
 butt_site <- rename(butt_site, SpeciesRichness = `specnumber(butt_rich)`)
+butt_site <- cbind(butt_site, spec_site)
+
 
 #### SAVE ####
 write_csv(buttsp, "output/ButterflySpecies.csv")
