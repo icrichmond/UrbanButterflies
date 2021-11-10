@@ -9,6 +9,8 @@ plantraw <- read_csv("input/PlantRawData.csv")
 plantraw <- rename(plantraw, Pond = X1)
 plantraw <- plantraw %>%
   mutate(across(q1:q20, as.numeric))
+# recode months so they all match 
+plantraw$month <- recode(plantraw$month, may = "May", july = "July", june = "June", august = "August")
 # remove rows where all Q1->Q20 are NA 
 plant <- plantraw %>% 
   filter(if_any(q1:q20, ~ !is.na(.)))
