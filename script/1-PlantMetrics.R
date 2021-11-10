@@ -7,11 +7,14 @@ plantraw <- read_csv("input/PlantRawData.csv")
 
 #### CLEAN-UP ####
 plantraw <- rename(plantraw, Pond = X1)
-plantraw[9:28] <- sapply(plantraw[9:28],as.numeric)
+plantraw <- plantraw %>%
+  mutate(across(q1:q20, as.numeric))
 # remove rows where all Q1->Q20 are NA 
-plant <- filter(plantraw, rowSums(is.na(plantraw)) != ncol(plantraw[,9:28]))
+plant <- plantraw %>% 
+  filter(if_any(q1:q20, ~ !is.na(.)))
 # remaining zeroes are NAs, replace them as such 
-plant[,9:28][plant[, 9:28] == 0] <- NA
+plant <- plant %>% 
+  mutate(across(q1:q20, na_if, 0))
 # assign appropriate data types
 plant$Pond <- as.factor(plant$Pond)
 plant$scientific_name <- as.factor(plant$scientific_name)
