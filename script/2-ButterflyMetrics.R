@@ -1,5 +1,5 @@
 #### PACKAGES #### 
-p <- c("readr", "dplyr", "tibble", "stringr", "tidyr", "vegan")
+p <- c("readr", "dplyr", "tibble", "stringr", "tidyr", "iNEXT", "ggplot2", "vegan")
 lapply(p, library, character.only = T)
 
 #### DATA ####
@@ -28,7 +28,7 @@ buttsp[buttsp$CommonNames=="Mustard White", "species"] <- "oleracea"
 buttsp <- mutate(buttsp, SpeciesCode = toupper(paste0(str_sub(Genus, 1, 3), "", str_sub(species, 1, 3))))
 
 
-#### ABUNDANCE & SPECIES RICHNESS ####
+#### ABUNDANCE ####
 # select valid rows 
 buttab <- filter(buttraw, if_any(SWP, ~ !is.na(.)))
 # separate columns with species names so they can be replaced with species codes
@@ -44,7 +44,7 @@ buttab <- buttab %>%
   mutate(abund = rowSums(across(HESSP:UNKSP), na.rm = T))
 
 
-#### DIVERSITY #### 
+#### DIVERSITY & SPECIES RICHNESS #### 
 #  Shannon diversity 
 shan <- select(buttab, HESSP:UNKSP)
 shan <- sapply(shan,as.numeric)
@@ -74,6 +74,34 @@ buttdate <- buttdate %>%
            "Even", "Simpson", "SpeciesRichness"))
 
 #### SITE ONLY ####
+# use iNEXT to calculate Shannon diversity, Simpson diversity, and species richness 
+# calculate the sampling coverage in our study to standardize our values 
+nextd <- sapply(buttab2, as.numeric)
+nextd <- replace_na(nextd, 0)
+nextd <- cbind(buttab1[,1], nextd)
+nextd <- nextd %>% 
+  group_by(SWP) %>% 
+  summarise(across(HESSP:UNKSP, sum))
+nextdl <- pivot_longer(nextd, HESSP:UNKSP)
+nextdw <- pivot_wider(nextdl, names_from = SWP) %>% 
+  column_to_rownames("name") %>% 
+  select_if(colSums(.) != 0)
+nextd <- as.list(nextdw)
+# calculate iNEXT object
+outrich <- iNEXT(nextd, q=0 ,datatype="abundance") # use min and max abundances observed for size
+sample.coverage <- ggiNEXT(outrich, type= 2) + theme(legend.position = 'none')
+coverage.by.richness <- ggiNEXT(outrich, type= 3)+ theme(legend.position = 'none')
+# $DataInfo for summarizing data information; $iNextEst for showing diversity estimates 
+# along with related statistics for a series of rarefied and extrapolated samples; and 
+# $AsyEst for showing asymptotic diversity estimates along with related statistics.
+
+# Look at the $Datainfo "SC" column - this will tell your your sample coverage for each site
+# so then you can rareify to your least % coverage among the sites
+out$DataInfo
+##getting coverage-based rarefied species richness values
+# this is the coverage curve - the level is the % of the lowest coverage among your sites - for me it was 78%
+coveragecurve <-estimateD(nextdw, datatype = "abundance", base = "coverage", level = 0.75)
+
 # abundance
 buttab_site <- buttab %>%
   group_by(SWP) %>% 
