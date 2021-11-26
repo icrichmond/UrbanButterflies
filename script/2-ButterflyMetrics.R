@@ -79,7 +79,7 @@ buttdate <- buttdate %>%
 
 #### SITE ONLY ####
 # use iNEXT to calculate Shannon diversity, Simpson diversity, and species richness 
-# calculate the sampling coverage in our study to standardize our values 
+# calculate the sampling coverage in our study to standardize our values wrt sampling effort 
 nextd <- sapply(buttab2, as.numeric)
 nextd <- replace_na(nextd, 0)
 nextd <- cbind(buttab1[,1], nextd)
@@ -95,38 +95,37 @@ nextdw <- pivot_wider(nextdl, names_from = SWP) %>%
 nextd <- as.list(nextdw)
 # calculate iNEXT object
 outrich <- iNEXT(nextd, q=0 ,datatype="abundance") # use min and max abundances observed for size
+# visualize sample coverage
 sample.coverage <- ggiNEXT(outrich, type= 2) + theme(legend.position = 'none')
 coverage.by.richness <- ggiNEXT(outrich, type= 3)+ theme(legend.position = 'none')
-# $DataInfo for summarizing data information; $iNextEst for showing diversity estimates 
-# along with related statistics for a series of rarefied and extrapolated samples; and 
-# $AsyEst for showing asymptotic diversity estimates along with related statistics.
-
-# Look at the $Datainfo "SC" column - this will tell your your sample coverage for each site
-# so then you can rareify to your least % coverage among the sites
+# extract sample coverage info
+# n = sample size, S.obs = species richness, SC = sample coverage
 outrich$DataInfo
-##getting coverage-based rarefied species richness values
-# this is the coverage curve - the level is the % of the lowest coverage among your sites - for me it was 78%
-coveragecurve <-estimateD(nextdw, datatype = "abundance", base = "coverage", level = 0.75)
-
+# calculate diversity values at the lowest sample coverage value
+# q(order) 0 = species richness, 1 = Shannon diversity, 2 = Simpson diversity
+cov <- min(outrich$DataInfo$SC)
+rarediv <- estimateD(nextdw, datatype = "abundance", base = "coverage", 
+                     level= NULL, conf=0.95)
+rarediv_w <- pivot_wider(rarediv, id_cols = site, names_from = order,
+                         names_sep = ".", values_from = c(method, SC, qD))
+rarediv_w <- rarediv_w %>% 
+  select(-c(method.1, method.2, SC.1, SC.2)) %>% 
+  rename(SWP = site, 
+         method = method.0, 
+         sampcov = SC.0, 
+         SpeciesRichness = qD.0, 
+         Shannon = qD.1, 
+         Simpson = qD.2)
 # abundance
+# NOTE: question for Kayleigh - do I need to rarify abundance also?
 buttab_site <- buttab %>%
   group_by(SWP) %>% 
-  summarise(abund = sum(across(HESSP:UNKSP), na.rm = T))
-# avg. diversity
-buttdiv_site <- buttdate %>%
-  group_by(SWP) %>%
-  summarise_at(vars(Shannon, Even, Simpson), "mean", na.rm = T)
-butt_site <- inner_join(buttab_site, buttdiv_site)
-# species richness
-butt_rich <- select(buttab, c(SWP, HESSP:UNKSP))
-butt_rich <- butt_rich %>%
-  group_by(SWP) %>%
-  summarise(across(HESSP:UNKSP, ~sum(.x, na.rm = TRUE)))
-butt_rich <- select(butt_rich, -SWP)
-spec_site <- as.data.frame(specnumber(butt_rich))
-spec_site <- rename(spec_site, SpeciesRichness = `specnumber(butt_rich)`)
-butt_site <- cbind(butt_site, spec_site)
+  summarise(abund = sum(across(HESSP:DANPLE), na.rm = T))
+buttab_site$SWP <- as.character(buttab_site$SWP)
+# join all metrics
+butt_site <- inner_join(buttab_site, rarediv_w)
 
+#### NOTE: by date data is NOT corrected for sampling effort ####
 
 #### SAVE ####
 write_csv(buttsp, "output/ButterflySpecies.csv")
