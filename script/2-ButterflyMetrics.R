@@ -37,16 +37,20 @@ buttab2 <- select(buttab, Skippers:Unknown)
 names(buttab2) <- buttsp$SpeciesCode[match(names(buttab2), buttsp$CommonNames)]
 # bind datasets back together 
 buttab <- cbind(buttab1, buttab2)
-# calculate abundance and species richness per site on each visit
+# transform each column to numeric 
 buttab <- buttab %>%
   mutate(across(HESSP:UNKSP, as.numeric))
+# remove columns where there are no observations 
 buttab <- buttab %>% 
-  mutate(abund = rowSums(across(HESSP:UNKSP), na.rm = T))
+  select(where(function(x) any(!is.na(x))))
+# calculate abundance and species richness per site on each visit
+buttab <- buttab %>% 
+  mutate(abund = rowSums(across(HESSP:DANPLE), na.rm = T))
 
 
 #### DIVERSITY & SPECIES RICHNESS #### 
 #  Shannon diversity 
-shan <- select(buttab, HESSP:UNKSP)
+shan <- select(buttab, HESSP:DANPLE)
 shan <- sapply(shan,as.numeric)
 shan <- replace_na(shan, 0)
 div <- as.data.frame(diversity(shan, "shannon"))
