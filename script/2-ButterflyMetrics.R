@@ -86,7 +86,9 @@ nextd <- cbind(buttab1[,1], nextd)
 nextd <- nextd %>% 
   group_by(SWP) %>% 
   summarise(across(HESSP:UNKSP, sum))
-nextdl <- pivot_longer(nextd, HESSP:UNKSP)
+nextd <- nextd %>% 
+  select_if(colSums(.) != 0)
+nextdl <- pivot_longer(nextd, HESSP:DANPLE)
 nextdw <- pivot_wider(nextdl, names_from = SWP) %>% 
   column_to_rownames("name") %>% 
   select_if(colSums(.) != 0)
@@ -101,7 +103,7 @@ coverage.by.richness <- ggiNEXT(outrich, type= 3)+ theme(legend.position = 'none
 
 # Look at the $Datainfo "SC" column - this will tell your your sample coverage for each site
 # so then you can rareify to your least % coverage among the sites
-out$DataInfo
+outrich$DataInfo
 ##getting coverage-based rarefied species richness values
 # this is the coverage curve - the level is the % of the lowest coverage among your sites - for me it was 78%
 coveragecurve <-estimateD(nextdw, datatype = "abundance", base = "coverage", level = 0.75)
