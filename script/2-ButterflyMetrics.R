@@ -97,7 +97,7 @@ nextd <- as.list(nextdw)
 outrich <- iNEXT(nextd, q=0 ,datatype="abundance") # use min and max abundances observed for size
 # visualize sample coverage
 sample.coverage <- ggiNEXT(outrich, type= 2) + theme(legend.position = 'none')
-coverage.by.richness <- ggiNEXT(outrich, type= 3)+ theme(legend.position = 'none')
+coverage.by.richness <- ggiNEXT(outrich, type= 3)+ theme(legend.position = 'none') + ylim(c(-1,30))
 # extract sample coverage info
 # n = sample size, S.obs = species richness, SC = sample coverage
 outrich$DataInfo
@@ -105,7 +105,7 @@ outrich$DataInfo
 # q(order) 0 = species richness, 1 = Shannon diversity, 2 = Simpson diversity
 cov <- min(outrich$DataInfo$SC)
 rarediv <- estimateD(nextdw, datatype = "abundance", base = "coverage", 
-                     level= NULL, conf=0.95)
+                     level= cov, conf=0.95)
 rarediv_w <- pivot_wider(rarediv, id_cols = site, names_from = order,
                          names_sep = ".", values_from = c(method, SC, qD))
 rarediv_w <- rarediv_w %>% 
@@ -117,7 +117,6 @@ rarediv_w <- rarediv_w %>%
          Shannon = qD.1, 
          Simpson = qD.2)
 # abundance
-# NOTE: question for Kayleigh - do I need to rarify abundance also?
 buttab_site <- buttab %>%
   group_by(SWP) %>% 
   summarise(abund = sum(across(HESSP:DANPLE), na.rm = T))
