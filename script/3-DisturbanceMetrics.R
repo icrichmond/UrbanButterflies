@@ -37,8 +37,16 @@ buffer5 <- st_buffer(studyponds_m, 5000)
 ## Calculate intersections 
 int2 <- st_intersection(buffer2, landcov)
 int5 <- st_intersection(buffer5, landcov)
+int2 <- st_make_valid(int2)
+int5 <- st_make_valid(int5)
 ## Metrics of disturbance
-
+dist2 <- int2 %>%
+  group_by(Pond, LABEL) %>%
+  summarise(geometry = st_union(geometry))
+dist5 <- int5 %>%
+  group_by(Pond, LABEL) %>% 
+  summarise(geometry = st_union(geometry))
+# area
 
 #### SAVE ####
 saveRDS(studyponds, "large/StudyPondsSpatial.rds")
