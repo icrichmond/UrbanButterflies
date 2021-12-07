@@ -60,4 +60,5 @@ saveRDS(studyponds, "large/StudyPondsSpatial.rds")
 lapply(names(buffers), function(df) saveRDS(buffers[[df]], file=paste0("large/", df, ".rds")))
 lapply(names(ints), function(df) saveRDS(ints[[df]], file=paste0("large/", df, ".rds")))
 lapply(names(anthrofull), function(df) saveRDS(anthrofull[[df]], file=paste0("large/", df, ".rds")))
+saveRDS(anthrofull, "large/AnthroFull.rds")
 
