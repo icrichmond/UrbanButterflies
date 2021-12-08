@@ -126,3 +126,19 @@ sh.top <- purrr::map(.x = sh.buf, .f = function(x){x[[which.min(sapply(1:length(
 ab.aic.buf <- aictab(ab.top)
 sr.aic.buf <- aictab(sr.top)
 sh.aic.buf <- aictab(sh.top)
+
+#### SAVE ####
+write_csv(as.data.frame(ab.aic), "output/AIC/AbundanceAllBuffers.csv")
+write_csv(as.data.frame(sr.aic), "output/AIC/SpeciesRichnessAllBuffers.csv")
+write_csv(as.data.frame(sh.aic), "output/AIC/ShannonAllBuffers.csv")
+
+ab.top.tidy <- purrr::map(.x = ab.top, .f = function(x){tidy(x)})
+write_csv(as.data.frame(ab.top.tidy), "output/ModelSummary/AbundanceTopSummary.csv")
+sr.top.tidy <- purrr::map(.x = sr.top, .f = function(x){tidy(x)})
+write_csv(as.data.frame(sr.top.tidy), "output/ModelSummary/SpeciesRichnessTopSummary.csv")
+sh.top.tidy <- purrr::map(.x = sh.top, .f = function(x){tidy(x)})
+write_csv(as.data.frame(sh.top.tidy), "output/ModelSummary/ShannonTopSummary.csv")
+
+write_csv(ab.aic.buf, "output/AIC/AbundanceTopModels.csv")
+write_csv(sr.aic.buf, "output/AIC/SpeciesRichnessTopModels.csv")
+write_csv(sh.aic.buf, "output/AIC/ShannonTopModels.csv")
