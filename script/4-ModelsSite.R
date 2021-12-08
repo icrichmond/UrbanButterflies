@@ -110,11 +110,19 @@ ab.buf <- Map(list, ab.dist, ab.nat, ab.sp, ab.null)
 sr.buf <- Map(list, sr.dist, sr.nat, sr.sp, sr.null)
 sh.buf <- Map(list, sh.dist, sh.nat, sh.sp, sh.null)
 
-# abundance 
+# Abundance 
 ab.aic <- purrr::map(.x = ab.buf, .f = function(x){aictab(x, modnames = c("Disturbance", "Natural Plants", "All Plants", "Null"))})
-# species richness 
+# Species Richness
 sr.aic <- purrr::map(.x = sr.buf, .f = function(x){aictab(x, modnames = c("Disturbance", "Natural Plants", "All Plants", "Null"))})
 # Shannon
 sh.aic <- purrr::map(.x = sh.buf, .f = function(x){aictab(x, modnames = c("Disturbance", "Natural Plants", "All Plants", "Null"))})
 
-# top models 
+# select top models for each buffer distance
+ab.top <- purrr::map(.x = ab.buf, .f = function(x){x[[which.min(sapply(1:length(x),function(y)AIC(x[[y]])))]]})
+sr.top <- purrr::map(.x = sr.buf, .f = function(x){x[[which.min(sapply(1:length(x),function(y)AIC(x[[y]])))]]})
+sh.top <- purrr::map(.x = sh.buf, .f = function(x){x[[which.min(sapply(1:length(x),function(y)AIC(x[[y]])))]]})
+
+# Buffer Distance 
+ab.aic.buf <- aictab(ab.top)
+sr.aic.buf <- aictab(sr.top)
+sh.aic.buf <- aictab(sh.top)
