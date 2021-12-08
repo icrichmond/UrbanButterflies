@@ -142,3 +142,5 @@ write_csv(as.data.frame(sh.top.tidy), "output/ModelSummary/ShannonTopSummary.csv
 write_csv(ab.aic.buf, "output/AIC/AbundanceTopModels.csv")
 write_csv(sr.aic.buf, "output/AIC/SpeciesRichnessTopModels.csv")
 write_csv(sh.aic.buf, "output/AIC/ShannonTopModels.csv")
+
+saveRDS(sitefull, "large/FullSiteDataset.rds")
