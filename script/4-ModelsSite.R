@@ -1,48 +1,108 @@
 # This script is for the models with the data pooled across dates and separated only by site 
 
 #### PACKAGES #### 
-p <- c("readr", "dplyr", "lme4", "AICcmodavg")
+p <- c("readr", "dplyr", "purrr", "sf", "lme4", "AICcmodavg")
 lapply(p, library, character.only = T)
 
 #### DATA #### 
 buttsit <- read_csv("output/ButterflyCleanbySite.csv")
 plantsit <- read_csv("output/PlantCleanbySite.csv")
-dist <- read_csv("output/SamplingAreaClean.csv")
+dist <- readRDS("large/AnthroFull.rds")
 
 #### DATA PREP ####
 # match pond names 
 buttsit <- buttsit %>% 
   rename(Pond = SWP) %>% 
   mutate(Pond = paste0("SWF-", "", Pond))
-dist <- mutate(dist, Pond = paste0("SWF-", "", Pond))
+dist <- purrr::map(.x = dist, .f = function(x){x %>% mutate(Pond = paste0("SWF-", "", Pond)) %>% select(-geometry.y) %>% rename(geometry = geometry.x)})
 # join datasets
 sitefull <- inner_join(buttsit, plantsit)
-sitefull <- inner_join(sitefull, dist)
+b <- c(20, 50, 100, 200, 500, 1000, 2000, 5000)
+sitefull <- purrr::map(.x = dist, .f = function(x){inner_join(x, sitefull, by = "Pond")}) %>% 
+  purrr::set_names(., nm = paste0("full",b))
 # assign factor variables 
-sitefull <- sitefull %>%
-  mutate(across(c(Pond, Disturbance), as.factor))
-
+sitefull <- purrr::map(.x = sitefull, .f = function(x){x %>% mutate(across(c(Pond, Disturbance), as.factor))})
+# assign numeric variables 
+sitefull <- purrr::map(.x = sitefull, .f = function(x){x %>% mutate(across(c(totarea, settarea, roadarea, anthroarea, settper, roadper, anthroper, PerCut), as.numeric))})
+# remove geometry
+sitefull <- purrr::map(.x = sitefull, .f = function(x){st_set_geometry(x, NULL)})
 
 #### COLLINEARITY ####
 # check for collinearity between numeric independent variables
-expl <- dplyr::select(sitefull, c(SamplingArea, nnative, nspecies, pernatsp, avgbloom, avgnatbloom, pernatbloom))
-corr <- cor(expl, method = c("spearman"))
+expl <- purrr::map(.x = sitefull, .f = function(x){x %>% dplyr::select(c(nnative, nspecies, pernatsp, avgbloom, avgnatbloom, pernatbloom, PerCut, settarea, roadarea, anthroarea, settper, roadper, anthroper))})
+corr <- purrr::map(.x = expl, .f = function(x){cor(x, method = c("spearman"))})
 # highly correlated (r > 0.60) are nspecies-nnative, nnative-pernatsp, pernatsp-pernatbloom, avgbloom-avgnatbloom, avgnatbloom-pernatbloom
-# the multiple measures of native species are correlated, make sure they are not in the same models
+# road and settlement are always highly correlated with overall anthropogenic land-use measures
+# road and settlement become highly correlated at 500 m + buffers
 
 #### SPATIAL AUTOCORRELATION ####
 
 
 #### MODELS #### 
-## Shannon Diversity ##
+## Abundance ## 
 # disturbance model 
-shan.dist <- lm(Shannon ~ Disturbance + SamplingArea, data = sitefull)
+ab.dist <- purrr::map(.x = sitefull, .f = function(x){lm(abund ~ PerCut * anthroper, data = x)}) %>% 
+  purrr::set_names(., nm = paste0("AbDist", b))
 # native species model 
-shan.nat <- lm(Shannon ~ nnative + avgnatbloom, data = sitefull)
+ab.nat <- purrr::map(.x = sitefull, .f = function(x){lm(abund ~ nnative * avgnatbloom, data = x)}) %>% 
+  purrr::set_names(., nm = paste0("AbNat", b))
 # full species model 
-shan.plant <- lm(Shannon ~ nspecies + avgbloom, data = sitefull)
+ab.sp <- purrr::map(.x = sitefull, .f = function(x){lm(abund ~ nspecies * avgbloom, data = x)}) %>% 
+  purrr::set_names(., nm = paste0("AbSp", b))
 # null 
-shan.null <- lm(Shannon ~ 1, data = sitefull)
+ab.null <- purrr::map(.x = sitefull, .f = function(x){lm(abund ~ 1, data = x)}) %>% 
+  purrr::set_names(., nm = paste0("AbNull", b))
 
-shan.mods <- list(shan.dist, shan.nat, shan.plant, shan.null)
-aictab(shan.mods)
+## Species Richness ## 
+# disturbance model
+sr.dist <- purrr::map(.x = sitefull, .f = function(x){lm(SpeciesRichness ~ PerCut * anthroper, data = x)}) %>% 
+  purrr::set_names(., nm = paste0("SRDist", b))
+# native species model 
+sr.nat <- purrr::map(.x = sitefull, .f = function(x){lm(SpeciesRichness ~ nnative * avgnatbloom, data = x)}) %>% 
+  purrr::set_names(., nm = paste0("SRNat", b))
+# full species model 
+sr.sp <- purrr::map(.x = sitefull, .f = function(x){lm(SpeciesRichness ~ nspecies * avgbloom, data = x)}) %>% 
+  purrr::set_names(., nm = paste0("SRSp", b))
+# null 
+sr.null <- purrr::map(.x = sitefull, .f = function(x){lm(SpeciesRichness ~ 1, data = x)}) %>% 
+  purrr::set_names(., nm = paste0("SRNull", b))
+
+## Shannon Diversity ##
+sh.dist <- purrr::map(.x = sitefull, .f = function(x){lm(Shannon ~ PerCut * anthroper, data = x)}) %>% 
+  purrr::set_names(., nm = paste0("ShDist", b))
+# native species model 
+sh.nat <- purrr::map(.x = sitefull, .f = function(x){lm(Shannon ~ nnative * avgnatbloom, data = x)}) %>% 
+  purrr::set_names(., nm = paste0("ShNat", b))
+# full species model 
+sh.sp <- purrr::map(.x = sitefull, .f = function(x){lm(Shannon ~ nspecies * avgbloom, data = x)}) %>% 
+  purrr::set_names(., nm = paste0("ShSp", b))
+# null 
+sh.null <- purrr::map(.x = sitefull, .f = function(x){lm(Shannon ~ 1, data = x)}) %>% 
+  purrr::set_names(., nm = paste0("ShNull", b))
+
+## Diagnostics ## 
+source("script/function-ResidPlots.R")
+# abundance
+ab <- list(ab.dist, ab.nat, ab.sp, ab.null)
+ab <- purrr::map(.x = ab, .f = function(x){imap(x, resid_plots)})
+pdf("figures/Diagnostics/abundance_glm_diagnostics.pdf")
+ab
+dev.off()
+
+# species richness 
+sr <- list(sr.dist, sr.nat, sr.sp, sr.null)
+sr <- purrr::map(.x = sr, .f = function(x){imap(x, resid_plots)})
+pdf("figures/Diagnostics/richness_glm_diagnostics.pdf")
+sr
+dev.off()
+
+# Shannon diversity
+sh <- list(sh.dist, sh.nat, sh.sp, sh.null)
+sh <- purrr::map(.x = sh, .f = function(x){imap(x, resid_plots)})
+pdf("figures/Diagnostics/shannon_glm_diagnostics.pdf")
+sh
+dev.off()
+
+# all diagnostics look good 
+
+## Model Ranking ##
