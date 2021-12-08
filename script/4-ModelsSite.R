@@ -1,7 +1,7 @@
 # This script is for the models with the data pooled across dates and separated only by site 
 
 #### PACKAGES #### 
-p <- c("readr", "dplyr", "purrr", "sf", "lme4", "AICcmodavg")
+p <- c("readr", "dplyr", "purrr", "sf", "AICcmodavg")
 lapply(p, library, character.only = T)
 
 #### DATA #### 
@@ -106,3 +106,15 @@ dev.off()
 # all diagnostics look good 
 
 ## Model Ranking ##
+ab.buf <- Map(list, ab.dist, ab.nat, ab.sp, ab.null)
+sr.buf <- Map(list, sr.dist, sr.nat, sr.sp, sr.null)
+sh.buf <- Map(list, sh.dist, sh.nat, sh.sp, sh.null)
+
+# abundance 
+ab.aic <- purrr::map(.x = ab.buf, .f = function(x){aictab(x, modnames = c("Disturbance", "Natural Plants", "All Plants", "Null"))})
+# species richness 
+sr.aic <- purrr::map(.x = sr.buf, .f = function(x){aictab(x, modnames = c("Disturbance", "Natural Plants", "All Plants", "Null"))})
+# Shannon
+sh.aic <- purrr::map(.x = sh.buf, .f = function(x){aictab(x, modnames = c("Disturbance", "Natural Plants", "All Plants", "Null"))})
+
+# top models 
