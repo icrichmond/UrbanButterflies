@@ -144,3 +144,5 @@ write_csv(sr.aic.buf, "output/AIC/SpeciesRichnessTopModels.csv")
 write_csv(sh.aic.buf, "output/AIC/ShannonTopModels.csv")
 
 saveRDS(sitefull, "large/FullSiteDataset.rds")
+
+saveRDS(ab.dist$AbDist50, "large/ModAbundanceDist50.rds")
