@@ -4,8 +4,6 @@ date: "12/17/2021"
 output: html_document
 ---
 
----
-
 ## Model descriptions  
 Due to correlations between several of our explanatory variables, we opted to create three models that tested separate hypotheses: disturbance model, native plant model, and total plant model. Dependent variables include abundance, species richness, and Shannon diversity. Species richness and Shannon diversity were rarified using the `iNEXT` package to account for differences in sampling effort across sites.  
 
@@ -208,6 +206,32 @@ sh %>% broom::tidy() %>% knitr::kable()
 ---
 
 
+## Figures 
+The following figures represent the statistically significant relationships that we found in the "Top Model Summaries" section. There is a lot of info to visualize, so I would love some suggestions on how to best incorportate this data.
+
+```{r, echo = F, eval = T}
+knitr::include_graphics("/home/icrichmond/Repositories/urban-butterflies/figures/AbundanceModels.png")
+```
+**Figure 1.** Regressions showing the relationships between abundance and statistically significant explanatory variables for the top-ranked buffer distances. Relationships are shown while accounting for other variables in the model using the `visreg` package. A) Effect of disturbance on abundance at 20 m B) Effect of disturbance on abundance at 5000 m. 
+
+```{r, echo = F, eval = T}
+knitr::include_graphics("/home/icrichmond/Repositories/urban-butterflies/figures/SpeciesRichnessModels.png")
+```
+**Figure 2.** Regressions showing the relationships between species richness and statistically significant explanatory variables for the top-ranked buffer distances. Relationships are shown while accounting for other variables in the model using the `visreg` package. A) Effect of anthropogenic land-use area (%) on species richness at 1000 m B) Effect of anthropogenic land-use area (%) on species richness at 2000 m.
+
+```{r, echo = F, eval = T}
+knitr::include_graphics("/home/icrichmond/Repositories/urban-butterflies/figures/Shannon1000mModel.png")
+```
+**Figure 3a.** Regressions showing the relationships between Shannon diversity and statistically significant explanatory variables for the 1000 m buffer distance. Relationships are shown while accounting for other variables in the model using the `visreg` package. A) Effect of disturbance B) Effect of anthropogenic land-use area (%) C) Interaction effect of disturbance and anthropogenic land-ues area (%)
+
+```{r, echo = F, eval = T}
+knitr::include_graphics("/home/icrichmond/Repositories/urban-butterflies/figures/Shannon100mModel.png")
+```
+**Figure 3b.** Regressions showing the relationships between Shannon diversity and statistically significant explanatory variables for the 100 m buffer distance. Relationships are shown while accounting for other variables in the model using the `visreg` package. A) Effect of anthropogenic land-use area (%) B) Interaction effect of disturbance and anthropogenic land-ues area (%)
+
+
+---
+
 
 ## Take-aways
 These are my main take-aways after looking at these results, but I am of course eager to get everyone else's inputs on these! 
@@ -217,12 +241,6 @@ These are my main take-aways after looking at these results, but I am of course 
 - Mowing Disturbed/Undisturbed category most important for abundance
 - Percent anthropogenic land-use most important for species richness and Shannon diversity
 
-
----
-
-
-## Figures 
-*Work in Progress*
 
 
 ---
