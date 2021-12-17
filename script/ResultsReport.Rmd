@@ -227,8 +227,15 @@ knitr::include_graphics("/home/icrichmond/Repositories/urban-butterflies/figures
 ```{r, echo = F, eval = T}
 knitr::include_graphics("/home/icrichmond/Repositories/urban-butterflies/figures/Shannon100mModel.png")
 ```
-**Figure 3b.** Regressions showing the relationships between Shannon diversity and statistically significant explanatory variables for the 100 m buffer distance. Relationships are shown while accounting for other variables in the model using the `visreg` package. A) Effect of anthropogenic land-use area (%) B) Interaction effect of disturbance and anthropogenic land-ues area (%)
+**Figure 3b.** Regressions showing the relationships between Shannon diversity and statistically significant explanatory variables for the 100 m buffer distance. Relationships are shown while accounting for other variables in the model using the `visreg` package. A) Effect of anthropogenic land-use area (%) B) Interaction effect of disturbance and anthropogenic land-ues area (%).  
 
+
+The next figure represents the R<sup> 2 </sup> for the top model at each buffer distance, with each line representing a different response variable. It's important to note that the top model was not always the disturbance model, however, for the top performing buffer distances, the top model was always disturbance.
+
+```{r, echo = F, eval = T}
+knitr::include_graphics("/home/icrichmond/Repositories/urban-butterflies/figures/Rsquared.jpg")
+```
+**Figure 4.** R<sup> 2 </sup> values for the top model at each buffer distance.
 
 ---
 
