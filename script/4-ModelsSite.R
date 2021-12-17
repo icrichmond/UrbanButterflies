@@ -156,3 +156,7 @@ saveRDS(sh.dist, "large/ShannonDistModels.rds")
 saveRDS(ab.aic.buf, "large/AbundanceBufferAIC.rds")
 saveRDS(sr.aic.buf, "large/SpeciesRichnessBufferAIC.rds")
 saveRDS(sh.aic.buf, "large/ShannonBufferAIC.rds")
+
+saveRDS(ab.top, "large/AbundanceTopModels.rds")
+saveRDS(sr.top, "large/SpeciesRichnessTopModels.rds")
+saveRDS(sh.top, "large/ShannonTopModels.rds")
