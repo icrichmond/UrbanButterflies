@@ -145,4 +145,14 @@ write_csv(sh.aic.buf, "output/AIC/ShannonTopModels.csv")
 
 saveRDS(sitefull, "large/FullSiteDataset.rds")
 
-saveRDS(ab.dist$AbDist50, "large/ModAbundanceDist50.rds")
+saveRDS(ab.aic, "large/AbundanceAIC.rds")
+saveRDS(sr.aic, "large/SpeciesRichnessAIC.rds")
+saveRDS(sh.aic, "large/ShannonAIC.rds")
+
+saveRDS(ab.dist, "large/AbundanceDistModels.rds")
+saveRDS(sr.dist, "large/SpeciesRichnessDistModels.rds")
+saveRDS(sh.dist, "large/ShannonDistModels.rds")
+
+saveRDS(ab.aic.buf, "large/AbundanceBufferAIC.rds")
+saveRDS(sr.aic.buf, "large/SpeciesRichnessBufferAIC.rds")
+saveRDS(sh.aic.buf, "large/ShannonBufferAIC.rds")
