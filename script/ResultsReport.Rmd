@@ -201,6 +201,43 @@ names(sh$coefficients) <- c('Intercept', 'Undisturbed','Anthropogenic (%)','Inte
 sh %>% broom::tidy() %>% knitr::kable()
 ```
 
+### Model Performance
+**Table 10**. R<sup> 2 </sup> values for the top model at each buffer distance. Same values are presented graphically in Figure 4.
+```{r, echo = F, eval=T, message=F, warning=F, }
+#### PACKAGES #### 
+library(purrr)
+library(dplyr)
+library(tidyr)
+library(stringr)
+#### DATA ##### 
+# abundance models 
+ab <- readRDS("large/AbundanceTopModels.rds")
+# species richness models 
+sr <- readRDS("large/SpeciesRichnessTopModels.rds")
+# shannon models 
+sh <- readRDS("large/ShannonTopModels.rds")
+
+#### CLEANING #### 
+# extract R^2 values 
+abr2 <- purrr::map_dfr(.x = ab, .f = function(x){summary(x)$r.squared})
+srr2 <- purrr::map_dfr(.x = sr, .f = function(x){summary(x)$r.squared})
+shr2 <- purrr::map_dfr(.x = sh, .f = function(x){summary(x)$r.squared})
+# pivot datasets    
+abr2 <- pivot_longer(abr2, cols = everything(), names_to = "model", values_to = "rsquared")
+srr2 <- pivot_longer(srr2, cols = everything(), names_to = "model", values_to = "rsquared")
+shr2 <- pivot_longer(shr2, cols = everything(), names_to = "model", values_to = "rsquared")
+# bind
+r2 <- rbind(abr2, srr2, shr2)
+r2 <- r2%>% 
+  mutate(modeltype = case_when(str_detect(model, 'Ab') ~ 'Abundance',
+                               str_detect(model, 'SR') ~ 'SpeciesRichness',
+                               str_detect(model, 'Sh') ~ 'Shannon')) %>% 
+  mutate(distance = str_replace_all(model, c("AbDist" = "", "SRDist" = "", "ShDist" = "")) )
+r2$distance <- as.numeric(r2$distance)
+r2$distance <- as.factor(r2$distance)
+r2 <- select(r2, model, modeltype, distance, rsquared)
+knitr::kable(r2, col.names = c("Model", "Response Variable", "Buffer Distance (m)", "R2"), digits = 3)
+```
 
 
 ---
@@ -235,7 +272,55 @@ The next figure represents the R<sup> 2 </sup> for the top model at each buffer 
 ```{r, echo = F, eval = T}
 knitr::include_graphics("/home/icrichmond/Repositories/urban-butterflies/figures/Rsquared.jpg")
 ```
-**Figure 4.** R<sup> 2 </sup> values for the top model at each buffer distance.
+**Figure 4.** R<sup> 2 </sup> values for the top model at each buffer distance.  
+
+
+---
+
+
+## Site Investigation   
+We want to identify which sites are classified as undisturbed but have high surrounding anthropogenic land-use (yellow dots at right side of panel in Figs 3a/3b).  
+
+```{r, echo = F, eval = T, messages = F, fig.dim= c(10,10), warning = F}
+suppressMessages(library(sf))
+library(dplyr)
+library(ggplot2)
+landcov <- read_sf("large/LandCover2011_Rivers.shp")
+dist <- readRDS("large/AnthroFull.rds")
+
+dist100 <- dist$anthro100
+dist100 <- dist100 %>% 
+  filter(Disturbance == "Undisturbed") %>% 
+  arrange(desc(anthroper))
+top5 <- dist100[1:5,]
+top5$anthroper <- as.numeric(top5$anthroper)
+
+bb <- st_bbox(st_buffer(top5, 2.5))
+
+thememain <- theme(panel.border = element_rect(size = 1, fill = NA),
+                  panel.grid = element_line(color = "grey32", size = 0.2),
+                  panel.background = element_rect(fill = "lightblue"),
+                  axis.text = element_text(size = 11, color = 'black'),
+                  axis.title = element_blank())
+cols <- c("Crop and Pasture" = "#FDBF6F", "Grassland" = "#FFFF99", "River" = "#A6CEE3", "Rock Barren" = "#B15928", "Sand and Gravel" = "#FF7F00", "Settlement" = "#CAB2D6" ,"Transportation" = "#6A3D9A", "Water" = "#1F78B4", "Wetland" = "#B2DF8A", "Wooded Area" = "#33A02C")
+
+ggplot() +
+  geom_sf(aes(fill = LABEL), col = NA,  data = landcov) +
+  scale_fill_manual("Land Cover Type", values = cols) +
+  geom_sf(aes(size = anthroper), col="black", data = top5) +
+  scale_size_continuous(range = c(2,6)) + 
+  guides(size = "none") + 
+  coord_sf(xlim = c(bb['xmin'], bb['xmax']),
+           ylim = c(bb['ymin'], bb['ymax'])) +
+  thememain
+
+```   
+
+
+**Figure 5.** Location of undisturbed sites with the highest percent anthropogenic land use in their 100 m buffer (n = 5). Sites include SWP 1428, SWP 1310, SWP 1914, SWP 1501, and SWP 1236. Values of percent anthropogenic land use range within the 100 m buffer range from 67.7% to 100%. Dot size on map corresponds to percent anthropogenic land use, with larger dots indicating a higher percent.
+
+
+
 
 ---
 
