@@ -81,7 +81,7 @@ buttdate <- buttdate %>%
 # use iNEXT to calculate Shannon diversity, Simpson diversity, and species richness 
 # calculate the sampling coverage in our study to standardize our values wrt sampling effort 
 nextd <- sapply(buttab2, as.numeric)
-nextd <- replace_na(nextd, 0)
+nextd[is.na(nextd)] <- 0
 nextd <- cbind(buttab1[,1], nextd)
 nextd <- nextd %>% 
   group_by(SWP) %>% 
