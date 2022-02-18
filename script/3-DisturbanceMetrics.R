@@ -54,7 +54,7 @@ anthro <- purrr::map(.x = dists, .f = function(x){x %>% group_by(Pond) %>% summa
                                                                                      anthroper = anthroarea/totarea)}) 
 studyponds_m <- as.data.frame(studyponds_m)
 anthrofull <- purrr::map(.x = anthro, .f = function(x){inner_join(x, studyponds_m, by = "Pond")}) %>% 
-  purrr::set_names(., nm = paste0("anthro",b))
+  purrr::set_names(., nm = paste0("buffer",b))
 
 #### SAVE ####
 saveRDS(studyponds, "large/StudyPondsSpatial.rds")
