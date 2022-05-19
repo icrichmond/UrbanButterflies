@@ -12,17 +12,15 @@ sh1000 <- sh$ShDist1000
 
 #### PLOT #### 
 ## Species Richness 
-sr1000m <- visreg(sr1000, xvar = "anthroper", line.par = list(col = "black"), gg = T) +
+sr1000a <- visreg(sr1000, xvar = "anthroper", line.par = list(col = "black"), gg = T) +
   geom_point(size = 2) +
   labs(y = "Species Richness", x = "Anthropogenic Area (%)")+
   theme_classic()
-
-sr2000m <- visreg(sr2000, xvar = "anthroper", line.par = list(col = "black"), gg = T) +
-  geom_point(size = 2) +
-  labs(y = "", x = "Anthropogenic Area (%)")+
+sr1000m <- visreg(sr1000, xvar = "Disturbance", line.par = list(col = "black"), gg = T) +
+  labs(y = "Species Richness", x = "")+
   theme_classic()
 
-p2 <- sr1000m + sr2000m + plot_annotation(tag_levels = 'A')
+p1 <- sr1000m + sr1000a + plot_annotation(tag_levels = 'A')
 
 ## Shannon Diversity
 sh1000m <- visreg(sh1000, xvar = "Disturbance", line.par = list(col = "black"), gg = T) +
@@ -58,12 +56,8 @@ p4 <- sh100a + sh100i + plot_annotation(tag_levels = 'A')
 
 
 #### SAVE ####
-png("figures/AbundanceModels.png", width = 6000, height = 3000, units = "px", res = 1000)
-p1
-dev.off()
-
 png("figures/SpeciesRichnessModels.png", width = 6000, height = 3000, units = "px", res = 1000)
-p2
+p1
 dev.off()
 
 png("figures/Shannon1000mModel.png", width = 6000, height = 5000, units = "px", res = 1000)
