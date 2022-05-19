@@ -1,7 +1,11 @@
 ﻿Variable,Acronym,Description
-Disturbance,Disturbance,Disturbed (over 30% grey space) or not disturbed (less than 30% grey space).
+Stormwater Pond ID,SWP,ID number provided by the City of Ottawa for each stormwater pond
+Disturbance,Dist,Disturbed (over 30% grey space) or not disturbed (less than 30% grey space).
 Anthropogenic,anthroper,Percent cover of roads and built-up area surrounding each pond
-Native Plant Species Richness,nnative,Species richness of native plants in bloom
-Average cover of native plants in bloom,avgnatbloom,Average cover of native plants in bloom 
+Abundance,Abund/ab,Butterfly abundance that has been rarified to account for sampling effort
+Species Richness,Richness/sr,Butterfly species richness 
+Shannon Diversity,Shannon/sh,Butterfly Shannon diversity
 Plant species richness,nspecies,Total number of plant species richness per site
+Native Plant Species Richness,nnative,Species richness of native plants in bloom
 Average cover of plants in bloom,avgbloom,Average cover of plants in bloom
+Average cover of native plants in bloom,avgnatbloom,Average cover of native plants in bloom 
