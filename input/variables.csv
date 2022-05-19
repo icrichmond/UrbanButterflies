@@ -1,0 +1,7 @@
+﻿Variable,Acronym,Description
+Disturbance,Disturbance,Disturbed (over 30% grey space) or not disturbed (less than 30% grey space).
+Anthropogenic,anthroper,Percent cover of roads and built-up area surrounding each pond
+Native Plant Species Richness,nnative,Species richness of native plants in bloom
+Average cover of native plants in bloom,avgnatbloom,Average cover of native plants in bloom 
+Plant species richness,nspecies,Total number of plant species richness per site
+Average cover of plants in bloom,avgbloom,Average cover of plants in bloom
