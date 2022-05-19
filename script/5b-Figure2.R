@@ -3,30 +3,14 @@ p <- c("ggplot2", "visreg", "patchwork")
 lapply(p, library, character.only = T)
 
 #### DATA #### 
-# abundance models 
-ab <- readRDS("large/AbundanceDistModels.rds")
-ab20 <- ab$AbDist20
-ab5000 <- ab$AbDist5000
 # species richness models 
 sr <- readRDS("large/SpeciesRichnessDistModels.rds")
 sr1000 <- sr$SRDist1000
-sr2000 <- sr$SRDist2000
 # shannon models
 sh <- readRDS("large/ShannonDistModels.rds")
 sh1000 <- sh$ShDist1000
-sh100 <- sh$ShDist100
 
 #### PLOT #### 
-## Abundance
-a20m <- visreg(ab20, xvar = "Disturbance", line.par = list(col = "black"), gg = T) +
-  labs(y = "Abundance", x = "")+
-  theme_classic()
-a5000m <- visreg(ab5000, xvar = "Disturbance", line.par = list(col = "black"), gg = T) +
-  labs(y = "", x = "")+
-  theme_classic()
-
-p1 <- a20m + a5000m + plot_annotation(tag_levels = 'A')
-
 ## Species Richness 
 sr1000m <- visreg(sr1000, xvar = "anthroper", line.par = list(col = "black"), gg = T) +
   geom_point(size = 2) +
