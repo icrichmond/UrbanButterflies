@@ -27,7 +27,7 @@ ggplot(counts, aes(count, reorder(species, count, sum))) +
   geom_text(aes(label = count), hjust = 0) + 
   theme_classic() + 
   theme(axis.text.y = element_text(face = 'italic', colour = 'black')) + 
-  scale_x_continuous(expand = c(0.0025,0)) + 
+  scale_x_continuous(expand = c(0.0025, 0), limits = c(0, 450)) + 
   ylab("") + 
   xlab("Abundance")
 
