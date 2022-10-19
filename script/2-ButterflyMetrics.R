@@ -46,7 +46,8 @@ buttab <- buttab %>%
 # calculate abundance and species richness per site on each visit
 buttab <- buttab %>% 
   mutate(abund = rowSums(across(HESSP:DANPLE), na.rm = T))
-
+# save
+write.csv(buttab, "output/ButterflyAbundance.csv")
 
 #### DIVERSITY & SPECIES RICHNESS #### 
 #  Shannon diversity 
