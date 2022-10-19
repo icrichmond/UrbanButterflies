@@ -14,7 +14,7 @@ sh1000 <- sh$ShDist1000
 ## Species Richness 
 sr1000a <- visreg(sr1000, xvar = "anthroper", line.par = list(col = "black"), gg = T) +
   geom_point(size = 2) +
-  labs(y = "Species Richness", x = "Anthropogenic Area (%)")+
+  labs(y = "Species Richness", x = "Urbanization (%)")+
   theme_classic()
 sr1000m <- visreg(sr1000, xvar = "Disturbance", line.par = list(col = "black"), gg = T) +
   labs(y = "Species Richness", x = "")+
@@ -28,11 +28,11 @@ sh1000m <- visreg(sh1000, xvar = "Disturbance", line.par = list(col = "black"), 
   theme_classic()
 sh1000a <- visreg(sh1000, xvar = "anthroper", line.par = list(col = "black"), gg = T) +
   geom_point(size = 2) +
-  labs(y = "Shannon diversity", x = "Anthropogenic Area (%)")+
+  labs(y = "Shannon diversity", x = "Urbanization (%)")+
   theme_classic()
 sh1000i <- visreg(sh1000, xvar = "anthroper", by= "Disturbance", overlay=TRUE, band = T, gg = T) +
   geom_point(size = 3, aes(colour = Disturbance))+
-  labs(y = "Shannon diversity", x = "Anthropogenic Land-Use (%)") + 
+  labs(y = "Shannon diversity", x = "Urbanization (%)") + 
   scale_colour_viridis_d(name = "Disturbance") +
   scale_fill_viridis_d(name = "Disturbance", alpha = 0.3)+
   theme_classic() + 
@@ -42,17 +42,17 @@ p3 <- ((sh1000m/sh1000a) | sh1000i) + plot_annotation(tag_levels = 'A')
 
 sh100a <- visreg(sh100, xvar = "anthroper", line.par = list(col = "black"), gg = T) +
   geom_point(size = 2) +
-  labs(y = "Shannon diversity", x = "Anthropogenic Area (%)")+
+  labs(y = "Shannon diversity", x = "Urbanization (%)")+
   theme_classic()
 sh100i <- visreg(sh100, xvar = "anthroper", by= "Disturbance", overlay=TRUE, band = T, gg = T) +
   geom_point(size = 3, aes(colour = Disturbance))+
-  labs(y = "Shannon diversity", x = "Anthropogenic Land-Use (%)") + 
+  labs(y = "Shannon diversity", x = "Urbanization (%)") + 
   scale_colour_viridis_d(name = "Disturbance") +
   scale_fill_viridis_d(name = "Disturbance", alpha = 0.3)+
   theme_classic() + 
   theme(legend.position = c(0.8, 0.9))
 
-p4 <- sh100a + sh100i + plot_annotation(tag_levels = 'A')
+p4 <- sh1000a + sh1000i + plot_annotation(tag_levels = 'A')
 
 
 #### SAVE ####

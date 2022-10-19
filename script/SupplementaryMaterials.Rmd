@@ -17,7 +17,7 @@ This supplementary information file contains (1) variable descriptions, (2) desc
 **Table S1.** Variable names, acronym (used in R code), and descriptions.
 
 ```{r, echo = F, eval=T}
-var <- read.csv("C:/Users/I_RICHMO/Documents/Repositories/UrbanButterflies/input/variables.csv")
+var <- read.csv("/home/icrichmond/Repositories/urban-butterflies/input/variables.csv")
 
 knitr::kable(var)
 ```
@@ -30,17 +30,17 @@ knitr::kable(var)
 ```{r, echo = F, eval=T, warning=F, message=F}
 library(dplyr)
 
-plant <- read.csv("C:/Users/I_RICHMO/Documents/Repositories/UrbanButterflies/output/PlantCleanbySite.csv")
+plant <- read.csv("/home/icrichmond/Repositories/urban-butterflies/output/PlantCleanbySite.csv")
 plant <- plant %>% 
   select(nspecies, nnative, avgbloom, avgnatbloom)
 
-dist <- read.csv("C:/Users/I_RICHMO/Documents/Repositories/UrbanButterflies/input/SamplingArea.csv")
+dist <- read.csv("/home/icrichmond/Repositories/urban-butterflies/input/SamplingArea.csv")
 dist$PerCut[is.na(dist$PerCut)] <- 0 
 dist <- dist %>% 
   mutate(Disturbance = if_else(PerCut >= 30, "Disturbed", "Undisturbed"))
 Dist <- dist$Disturbance
 
-butt <- read.csv("C:/Users/I_RICHMO/Documents/Repositories/UrbanButterflies/output/ButterflyCleanbySite.csv")
+butt <- read.csv("/home/icrichmond/Repositories/urban-butterflies/output/ButterflyCleanbySite.csv")
 butt <- butt %>% 
   select(SWP, abund, SpeciesRichness, Shannon) %>%
   rename(Abund = abund,
@@ -59,7 +59,7 @@ knitr::kable(df, digits = 2)
 
 Due to correlations between several of our explanatory variables, we opted to create three models that tested separate hypotheses: disturbance model, native plant model, and total plant model. Dependent variables include abundance, species richness, and Shannon diversity. Species richness and Shannon diversity were rarified using the `iNEXT` package to account for differences in sampling effort across sites.
 
-The disturbance model includes a binary variable of disturbed/undisturbed, measured by Jesse in the field and is based on % mowed with sites that have over approximately 30% mowed marked as disturbed. We also created buffers around each site and calculated the % area that is anthropogenic in each buffer (anthropogenic defined as settlement or roads). Eight buffer distances were tested: 20 m, 50 m, 100 m, 200 m, 500 m, 1000 m, 2000 m, and 5000 m based on Rivest & Kharouba (2021, *Canadian Journal of Zoology*) and Kuussaari et al. (2021, *Urban Ecosystems*).
+The disturbance model includes a binary variable of disturbed/undisturbed, measured by Jesse in the field and is based on % mowed with sites that have over approximately 30% mowed marked as disturbed. We also created buffers around each site and calculated the % area that is urbanized in each buffer (urbanization defined as settlement and roads). Eight buffer distances were tested: 20 m, 50 m, 100 m, 200 m, 500 m, 1000 m, 2000 m, and 5000 m based on Rivest & Kharouba (2021, *Canadian Journal of Zoology*) and Kuussaari et al. (2021, *Urban Ecosystems*).
 
 The native plants model includes number of native species found at each site and average cover of native plant bloom in each quadrat at each site. The total plant model used the same measures but included all flowering plants observed at each site.
 
@@ -85,7 +85,7 @@ To test which buffer distance performed best, we took the top performing model (
 **Table S3.** AICc table of buffer distances for abundance models. All models compared are disturbance models, as disturbance was the top ranking model for abundance. Numbers in model name refer to the buffer distance (i.e., Modnames = AbDist50 = abundance disturbance model at 50 m buffer distance)
 
 ```{r, echo = F, eval=T}
-a <- readRDS("C:/Users/I_RICHMO/Documents/Repositories/UrbanButterflies/large/AbundanceBufferAIC.rds")
+a <- readRDS("/home/icrichmond/Repositories/urban-butterflies/large/AbundanceBufferAIC.rds")
 
 knitr::kable(a) 
 ```
@@ -93,7 +93,7 @@ knitr::kable(a)
 **Table S4.** AICc table of buffer distances for species richness models. All models compared are disturbance models, as disturbance was the top ranking model for species richness Numbers in model name refer to the buffer distance (i.e., Modnames = SRDist1000 = species richness disturbance model at 1000 m buffer distance)
 
 ```{r, echo = F, eval=T}
-sr <- readRDS("C:/Users/I_RICHMO/Documents/Repositories/UrbanButterflies/large/SpeciesRichnessBufferAIC.rds")
+sr <- readRDS("/home/icrichmond/Repositories/urban-butterflies/large/SpeciesRichnessBufferAIC.rds")
 
 knitr::kable(sr) 
 ```
@@ -101,7 +101,7 @@ knitr::kable(sr)
 **Table S5.** AICc table of buffer distances for Shannon diversity models. All models compared are disturbance models, as disturbance was the top ranking model for Shannon diversity. Numbers in model name refer to the buffer distance (i.e., Modnames = ShDist1000 = Shannon diversity disturbance model at 1000 m buffer distance)
 
 ```{r, echo = F, eval=T}
-sr <- readRDS("C:/Users/I_RICHMO/Documents/Repositories/UrbanButterflies/large/ShannonBufferAIC.rds")
+sr <- readRDS("/home/icrichmond/Repositories/urban-butterflies/large/ShannonBufferAIC.rds")
 
 knitr::kable(sr) 
 ```
@@ -117,7 +117,7 @@ To demonstrate the top model at each of the top buffer distances, here are the A
 **Table S6a.** AICc table ranking abundance models at 50 m, one of three buffer distances found within 2 delta AICc.
 
 ```{r, echo = F, eval=T}
-a <- readRDS("C:/Users/I_RICHMO/Documents/Repositories/UrbanButterflies/large/AbundanceAIC.rds")
+a <- readRDS("/home/icrichmond/Repositories/urban-butterflies/large/AbundanceAIC.rds")
 
 knitr::kable(a$AbDist50) 
 ```
@@ -125,7 +125,7 @@ knitr::kable(a$AbDist50)
 **Table S6b.** AICc table ranking abundance models at 20 m, one of three buffer distances found within 2 delta AICc.
 
 ```{r, echo = F, eval=T}
-a <- readRDS("C:/Users/I_RICHMO/Documents/Repositories/UrbanButterflies/large/AbundanceAIC.rds")
+a <- readRDS("/home/icrichmond/Repositories/urban-butterflies/large/AbundanceAIC.rds")
 
 knitr::kable(a$AbDist20) 
 ```
@@ -133,7 +133,7 @@ knitr::kable(a$AbDist20)
 **Table S6c.** AICc table ranking abundance models at 5000 m, one of three buffer distances found within 2 delta AICc.
 
 ```{r, echo = F, eval=T}
-a <- readRDS("C:/Users/I_RICHMO/Documents/Repositories/UrbanButterflies/large/AbundanceAIC.rds")
+a <- readRDS("/home/icrichmond/Repositories/urban-butterflies/large/AbundanceAIC.rds")
 
 knitr::kable(a$AbDist5000) 
 ```
@@ -143,7 +143,7 @@ knitr::kable(a$AbDist5000)
 **Table S7a.** AICc table ranking species richness models at 1000 m, one of three buffer distances found within 2 delta AICc.
 
 ```{r, echo = F, eval=T}
-sr <- readRDS("C:/Users/I_RICHMO/Documents/Repositories/UrbanButterflies/large/SpeciesRichnessAIC.rds")
+sr <- readRDS("/home/icrichmond/Repositories/urban-butterflies/large/SpeciesRichnessAIC.rds")
 
 knitr::kable(sr$SRDist1000) 
 ```
@@ -151,7 +151,7 @@ knitr::kable(sr$SRDist1000)
 **Table S7b.** AICc table ranking species richness models at 2000 m, one of three buffer distances found within 2 delta AICc.
 
 ```{r, echo = F, eval=T}
-sr <- readRDS("C:/Users/I_RICHMO/Documents/Repositories/UrbanButterflies/large/SpeciesRichnessAIC.rds")
+sr <- readRDS("/home/icrichmond/Repositories/urban-butterflies/large/SpeciesRichnessAIC.rds")
 
 knitr::kable(sr$SRDist2000) 
 ```
@@ -159,7 +159,7 @@ knitr::kable(sr$SRDist2000)
 **Table S7c.** AICc table ranking species richness models at 100 m, one of three buffer distances found within 2 delta AICc.
 
 ```{r, echo = F, eval=T}
-sr <- readRDS("C:/Users/I_RICHMO/Documents/Repositories/UrbanButterflies/large/SpeciesRichnessAIC.rds")
+sr <- readRDS("/home/icrichmond/Repositories/urban-butterflies/large/SpeciesRichnessAIC.rds")
 
 knitr::kable(sr$SRDist100) 
 ```
@@ -169,7 +169,7 @@ knitr::kable(sr$SRDist100)
 **Table S8a.** AICc table ranking species richness models at 1000 m, one of two buffer distances found within 2 delta AICc.
 
 ```{r, echo = F, eval=T}
-sh <- readRDS("C:/Users/I_RICHMO/Documents/Repositories/UrbanButterflies/large/ShannonAIC.rds")
+sh <- readRDS("/home/icrichmond/Repositories/urban-butterflies/large/ShannonAIC.rds")
 
 knitr::kable(sh$ShDist1000) 
 ```
@@ -177,7 +177,7 @@ knitr::kable(sh$ShDist1000)
 **Table S8b.** AICc table ranking species richness models at 100 m, one of two buffer distances found within 2 delta AICc.
 
 ```{r, echo = F, eval=T}
-sh <- readRDS("C:/Users/I_RICHMO/Documents/Repositories/UrbanButterflies/large/ShannonAIC.rds")
+sh <- readRDS("/home/icrichmond/Repositories/urban-butterflies/large/ShannonAIC.rds")
 
 knitr::kable(sh$ShDist100) 
 ```
@@ -194,9 +194,9 @@ We investigate the top models at each buffer distance to see which variables are
 
 ```{r, echo = F, eval=T}
 library(magrittr)
-ab <- readRDS("C:/Users/I_RICHMO/Documents/Repositories/UrbanButterflies/large/AbundanceDistModels.rds")
+ab <- readRDS("/home/icrichmond/Repositories/urban-butterflies/large/AbundanceDistModels.rds")
 ab <- ab$AbDist50 
-names(ab$coefficients) <- c('Intercept', 'Undisturbed','Anthropogenic (%)','Interaction')
+names(ab$coefficients) <- c('Intercept', 'Undisturbed','Urbanization (%)','Interaction')
 ab %>% broom::tidy() %>% knitr::kable()
 ```
 
@@ -204,9 +204,9 @@ ab %>% broom::tidy() %>% knitr::kable()
 
 ```{r, echo = F, eval=T}
 library(magrittr)
-ab <- readRDS("C:/Users/I_RICHMO/Documents/Repositories/UrbanButterflies/large/AbundanceDistModels.rds")
+ab <- readRDS("/home/icrichmond/Repositories/urban-butterflies/large/AbundanceDistModels.rds")
 ab <- ab$AbDist20 
-names(ab$coefficients) <- c('Intercept', 'Undisturbed','Anthropogenic (%)','Interaction')
+names(ab$coefficients) <- c('Intercept', 'Undisturbed','Urbanization (%)','Interaction')
 ab %>% broom::tidy() %>% knitr::kable()
 ```
 
@@ -214,9 +214,9 @@ ab %>% broom::tidy() %>% knitr::kable()
 
 ```{r, echo = F, eval=T}
 library(magrittr)
-ab <- readRDS("C:/Users/I_RICHMO/Documents/Repositories/UrbanButterflies/large/AbundanceDistModels.rds")
+ab <- readRDS("/home/icrichmond/Repositories/urban-butterflies/large/AbundanceDistModels.rds")
 ab <- ab$AbDist5000 
-names(ab$coefficients) <- c('Intercept', 'Undisturbed','Anthropogenic (%)','Interaction')
+names(ab$coefficients) <- c('Intercept', 'Undisturbed','Urbanization (%)','Interaction')
 ab %>% broom::tidy() %>% knitr::kable()
 ```
 
@@ -226,9 +226,9 @@ ab %>% broom::tidy() %>% knitr::kable()
 
 ```{r, echo = F, eval=T}
 library(magrittr)
-sr <- readRDS("C:/Users/I_RICHMO/Documents/Repositories/UrbanButterflies/large/SpeciesRichnessDistModels.rds")
+sr <- readRDS("/home/icrichmond/Repositories/urban-butterflies/large/SpeciesRichnessDistModels.rds")
 sr <- sr$SRDist1000 
-names(sr$coefficients) <- c('Intercept', 'Undisturbed','Anthropogenic (%)','Interaction')
+names(sr$coefficients) <- c('Intercept', 'Undisturbed','Urbanization (%)','Interaction')
 sr %>% broom::tidy() %>% knitr::kable()
 ```
 
@@ -236,9 +236,9 @@ sr %>% broom::tidy() %>% knitr::kable()
 
 ```{r, echo = F, eval=T}
 library(magrittr)
-sr <- readRDS("C:/Users/I_RICHMO/Documents/Repositories/UrbanButterflies/large/SpeciesRichnessDistModels.rds")
+sr <- readRDS("/home/icrichmond/Repositories/urban-butterflies/large/SpeciesRichnessDistModels.rds")
 sr <- sr$SRDist2000 
-names(sr$coefficients) <- c('Intercept', 'Undisturbed','Anthropogenic (%)','Interaction')
+names(sr$coefficients) <- c('Intercept', 'Undisturbed','Urbanization (%)','Interaction')
 sr %>% broom::tidy() %>% knitr::kable()
 ```
 
@@ -248,9 +248,9 @@ sr %>% broom::tidy() %>% knitr::kable()
 
 ```{r, echo = F, eval=T}
 library(magrittr)
-sh <- readRDS("C:/Users/I_RICHMO/Documents/Repositories/UrbanButterflies/large/ShannonDistModels.rds")
+sh <- readRDS("/home/icrichmond/Repositories/urban-butterflies/large/ShannonDistModels.rds")
 sh <- sh$ShDist1000 
-names(sh$coefficients) <- c('Intercept', 'Undisturbed','Anthropogenic (%)','Interaction')
+names(sh$coefficients) <- c('Intercept', 'Undisturbed','Urbanization (%)','Interaction')
 sh %>% broom::tidy() %>% knitr::kable()
 ```
 
@@ -258,8 +258,8 @@ sh %>% broom::tidy() %>% knitr::kable()
 
 ```{r, echo = F, eval=T}
 library(magrittr)
-sh <- readRDS("C:/Users/I_RICHMO/Documents/Repositories/UrbanButterflies/large/ShannonDistModels.rds")
+sh <- readRDS("/home/icrichmond/Repositories/urban-butterflies/large/ShannonDistModels.rds")
 sh <- sh$ShDist100 
-names(sh$coefficients) <- c('Intercept', 'Undisturbed','Anthropogenic (%)','Interaction')
+names(sh$coefficients) <- c('Intercept', 'Undisturbed','Urbanization (%)','Interaction')
 sh %>% broom::tidy() %>% knitr::kable()
 ```
