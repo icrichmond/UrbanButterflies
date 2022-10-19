@@ -50,7 +50,7 @@ mp <- mp[mp$name %in% c("Ontario", "Québec"), ]
 st_crs(mp) <- 426
 
 on <- ggplot(mp) + 
-  geom_sf(fill = 'white', size = 0.3) + 
+  geom_sf(fill = '#c1d1aa', size = 0.3) +
   geom_rect(aes(
     xmin = bb['xmin'],
     xmax = bb['xmax'],
@@ -79,6 +79,5 @@ ss +
     )
 
 
-
 #### Save ####
-#ggsave("figures/StudyArea.jpg", width = 4542, height = 2882, units = "px", dpi = 450)
+ggsave("figures/StudyArea.jpg", width = 4542, height = 2882, units = "px", dpi = 450)
