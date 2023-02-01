@@ -1,6 +1,5 @@
 Variable,Acronym,Description
 Stormwater Pond ID,SWP,ID number provided by the City of Ottawa for each stormwater pond
-Disturbance,Dist,Disturbed (over 30% grey space) or not disturbed (less than 30% grey space).
 Urbanization,anthroper,Percent cover of roads and built-up area surrounding each pond
 Abundance,Abund/ab,Butterfly abundance that has been rarified to account for sampling effort
 Species Richness,Richness/sr,Butterfly species richness 
