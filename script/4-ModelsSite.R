@@ -1,7 +1,7 @@
 # This script is for the models with the data pooled across dates and separated only by site 
 
 #### PACKAGES #### 
-p <- c("readr", "dplyr", "purrr", "sf", "AICcmodavg")
+p <- c("readr", "dplyr", "purrr", "sf", "AICcmodavg", "broom.mixed")
 lapply(p, library, character.only = T)
 
 #### DATA #### 
@@ -41,7 +41,7 @@ corr <- purrr::map(.x = expl, .f = function(x){cor(x, method = c("spearman"))})
 #### MODELS #### 
 ## Abundance ## 
 # disturbance model 
-ab.dist <- purrr::map(.x = sitefull, .f = function(x){lm(abund ~ Disturbance * anthroper, data = x)}) %>% 
+ab.dist <- purrr::map(.x = sitefull, .f = function(x){lm(abund ~ anthroper, data = x)}) %>% 
   purrr::set_names(., nm = paste0("AbDist", b))
 # native species model 
 ab.nat <- purrr::map(.x = sitefull, .f = function(x){lm(abund ~ nnative * avgnatbloom, data = x)}) %>% 
@@ -55,7 +55,7 @@ ab.null <- purrr::map(.x = sitefull, .f = function(x){lm(abund ~ 1, data = x)}) 
 
 ## Species Richness ## 
 # disturbance model
-sr.dist <- purrr::map(.x = sitefull, .f = function(x){lm(SpeciesRichness ~ Disturbance * anthroper, data = x)}) %>% 
+sr.dist <- purrr::map(.x = sitefull, .f = function(x){lm(SpeciesRichness ~ anthroper, data = x)}) %>% 
   purrr::set_names(., nm = paste0("SRDist", b))
 # native species model 
 sr.nat <- purrr::map(.x = sitefull, .f = function(x){lm(SpeciesRichness ~ nnative * avgnatbloom, data = x)}) %>% 
@@ -68,7 +68,7 @@ sr.null <- purrr::map(.x = sitefull, .f = function(x){lm(SpeciesRichness ~ 1, da
   purrr::set_names(., nm = paste0("SRNull", b))
 
 ## Shannon Diversity ##
-sh.dist <- purrr::map(.x = sitefull, .f = function(x){lm(Shannon ~ Disturbance * anthroper, data = x)}) %>% 
+sh.dist <- purrr::map(.x = sitefull, .f = function(x){lm(Shannon ~ anthroper, data = x)}) %>% 
   purrr::set_names(., nm = paste0("ShDist", b))
 # native species model 
 sh.nat <- purrr::map(.x = sitefull, .f = function(x){lm(Shannon ~ nnative * avgnatbloom, data = x)}) %>% 
