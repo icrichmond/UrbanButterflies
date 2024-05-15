@@ -52,7 +52,7 @@ nextd[is.na(nextd)] <- 0
 nextd <- cbind(buttab1[,1], nextd)
 nextd <- nextd %>% 
   group_by(SWP) %>% 
-  summarise(across(HESSP:UNKSP, sum))
+  summarise(across(HESSP:DANPLE, sum))
 nextd <- nextd %>% 
   select_if(colSums(.) != 0)
 nextdl <- pivot_longer(nextd, HESSP:DANPLE)
@@ -73,12 +73,12 @@ outrich$DataInfo
 cov <- min(outrich$DataInfo$SC)
 rarediv <- estimateD(nextdw, datatype = "abundance", base = "coverage", 
                      level= cov, conf=0.95)
-rarediv_w <- pivot_wider(rarediv, id_cols = site, names_from = order,
-                         names_sep = ".", values_from = c(method, SC, qD))
+rarediv_w <- pivot_wider(rarediv, id_cols = Assemblage, names_from = Order.q,
+                         names_sep = ".", values_from = c(m, SC, qD))
 rarediv_w <- rarediv_w %>% 
-  select(-c(method.1, method.2, SC.1, SC.2)) %>% 
-  rename(SWP = site, 
-         method = method.0, 
+  select(-c(m.1, m.2, SC.1, SC.2)) %>% 
+  rename(SWP = Assemblage, 
+         method = m.0, 
          sampcov = SC.0, 
          SpeciesRichness = qD.0, 
          Shannon = qD.1, 
@@ -91,9 +91,6 @@ buttab_site$SWP <- as.character(buttab_site$SWP)
 # join all metrics
 butt_site <- inner_join(buttab_site, rarediv_w)
 
-#### NOTE: by date data is NOT corrected for sampling effort ####
-
 #### SAVE ####
 write_csv(buttsp, "output/ButterflySpecies.csv")
-write_csv(buttdate, "output/ButterflyCleanbyDate.csv")
 write_csv(butt_site, "output/ButterflyCleanbySite.csv")
