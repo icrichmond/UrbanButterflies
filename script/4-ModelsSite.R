@@ -14,9 +14,12 @@ dist <- readRDS("output/AnthroFull.rds")
 buttsit <- buttsit %>% 
   rename(Pond = SWP) %>% 
   mutate(Pond = paste0("SWF-", "", Pond))
-dist <- purrr::map(.x = dist, .f = function(x){x %>% mutate(Pond = paste0("SWF-", "", Pond)) %>% select(-geometry.y) %>% rename(geometry = geometry.x)})
-# join datasets
+
+dist <- purrr::map(.x = dist, .f = function(x){
+  x %>% mutate(Pond = paste0("SWF-", "", Pond))})
+
 sitefull <- inner_join(buttsit, plantsit)
+
 b <- c(20, 50, 100, 200, 500, 1000, 2000, 5000)
 sitefull <- purrr::map(.x = dist, .f = function(x){inner_join(x, sitefull, by = "Pond")}) %>% 
   purrr::set_names(., nm = paste0("full",b))
@@ -143,7 +146,7 @@ write_csv(ab.aic.buf, "output/AIC/AbundanceTopModels.csv")
 write_csv(sr.aic.buf, "output/AIC/SpeciesRichnessTopModels.csv")
 write_csv(sh.aic.buf, "output/AIC/ShannonTopModels.csv")
 
-saveRDS(sitefull, "large/FullSiteDataset.rds")
+# save in format easier for plotting in ignored large/ folder
 
 saveRDS(ab.aic, "large/AbundanceAIC.rds")
 saveRDS(sr.aic, "large/SpeciesRichnessAIC.rds")
