@@ -6,16 +6,11 @@ lapply(p, library, character.only = T)
 buttraw <- read_csv("input/ButterflyRawData.csv")
 
 #### SPECIES NAMES ####
-# select column names that correspond to species 
-# first row of dataset is scientific names 
-buttsp <- filter(buttraw, `Common name` == "Scientific Name")
-buttsp <- select(buttsp, `Common name`:Unknown)
 # need to transpose the dataset 
-buttsp <- as.data.frame(t(buttsp[,-1]))
+buttsp <- as.data.frame(t(buttraw[,-1]))
 # convert row names to a column and add genus and species columns
 buttsp <- buttsp %>% 
-  rownames_to_column("CommonNames") %>% 
-  rename(ScientificNames = V1) %>% 
+  rownames_to_column("ScientificNames") %>% 
   mutate(Genus = word(ScientificNames, 1)) %>% 
   mutate(species = word(ScientificNames, 2))
 # convert NAs and blanks to "sp." in species column
@@ -23,23 +18,22 @@ buttsp$species[buttsp$species == ""] <- NA
 buttsp$Genus <- replace_na(buttsp$Genus, "UNK")
 buttsp$species <- replace_na(buttsp$species, "sp")
 # fix typo 
-buttsp[buttsp$CommonNames=="Mustard White", "species"] <- "oleracea"
+buttsp[buttsp$ScientificNames=="Polites Themistocles", "species"] <- "themistocles"
 # add species code
 buttsp <- mutate(buttsp, SpeciesCode = toupper(paste0(str_sub(Genus, 1, 3), "", str_sub(species, 1, 3))))
 
 
 #### ABUNDANCE ####
-# select valid rows 
-buttab <- filter(buttraw, if_any(SWP, ~ !is.na(.)))
 # separate columns with species names so they can be replaced with species codes
-buttab1 <- select(buttab, SWP:NatRichnessMA)
-buttab2 <- select(buttab, Skippers:Unknown)
-names(buttab2) <- buttsp$SpeciesCode[match(names(buttab2), buttsp$CommonNames)]
+buttab1 <- select(buttraw, `Scientific Name`) %>% 
+  rename(SWP = `Scientific Name`)
+buttab2 <- select(buttraw, -`Scientific Name`)
+names(buttab2) <- buttsp$SpeciesCode[match(names(buttab2), buttsp$ScientificNames)]
 # bind datasets back together 
 buttab <- cbind(buttab1, buttab2)
 # transform each column to numeric 
 buttab <- buttab %>%
-  mutate(across(HESSP:UNKSP, as.numeric))
+  mutate(across(HESSP:DANPLE, as.numeric))
 # remove columns where there are no observations 
 buttab <- buttab %>% 
   select(where(function(x) any(!is.na(x))))
