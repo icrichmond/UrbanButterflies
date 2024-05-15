@@ -7,7 +7,7 @@ lapply(p, library, character.only = T)
 #### DATA #### 
 buttsit <- read_csv("output/ButterflyCleanbySite.csv")
 plantsit <- read_csv("output/PlantCleanbySite.csv")
-dist <- readRDS("large/AnthroFull.rds")
+dist <- readRDS("output/AnthroFull.rds")
 
 #### DATA PREP ####
 # match pond names 
