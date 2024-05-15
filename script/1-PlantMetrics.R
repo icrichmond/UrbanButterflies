@@ -6,7 +6,7 @@ lapply(p, library, character.only = T)
 plantraw <- read_csv("input/PlantRawData.csv")
 
 #### CLEAN-UP ####
-plantraw <- rename(plantraw, Pond = X1)
+plantraw <- rename(plantraw, Pond = `...1`)
 plantraw <- plantraw %>%
   mutate(across(q1:q20, as.numeric))
 # recode months so they all match 
