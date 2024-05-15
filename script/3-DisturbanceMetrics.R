@@ -55,9 +55,5 @@ anthrofull <- purrr::map(.x = anthro, .f = function(x){inner_join(x, studyponds_
   purrr::set_names(., nm = paste0("buffer",b))
 
 #### SAVE ####
-saveRDS(studyponds, "large/StudyPondsSpatial.rds")
-lapply(names(buffers), function(df) saveRDS(buffers[[df]], file=paste0("large/", df, ".rds")))
-lapply(names(ints), function(df) saveRDS(ints[[df]], file=paste0("large/", df, ".rds")))
-lapply(names(anthrofull), function(df) saveRDS(anthrofull[[df]], file=paste0("large/", df, ".rds")))
-saveRDS(anthrofull, "large/AnthroFull.rds")
+write_sf(studyponds, "output/StudyPondsSpatial.gpkg")
 saveRDS(anthrofull, "output/AnthroFull.rds")
