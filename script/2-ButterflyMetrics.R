@@ -44,34 +44,6 @@ buttab <- buttab %>%
 write.csv(buttab, "output/ButterflyAbundance.csv")
 
 #### DIVERSITY & SPECIES RICHNESS #### 
-#  Shannon diversity 
-shan <- select(buttab, HESSP:DANPLE)
-shan <- sapply(shan,as.numeric)
-shan <- replace_na(shan, 0)
-div <- as.data.frame(diversity(shan, "shannon"))
-# Pielou's evenness
-even <- as.data.frame(diversity(shan, "shannon")/(log(specnumber(shan))))
-# Simpson diversity 
-simp <- as.data.frame(diversity(shan, "simpson"))
-# Number of species 
-spec <- as.data.frame(specnumber(shan))
-# join together
-div <- cbind(div, even, simp, spec)
-div <- div %>%
-  rename(Shannon = `diversity(shan, "shannon")`, 
-         Even = `diversity(shan, "shannon")/(log(specnumber(shan)))`, 
-         Simpson = `diversity(shan, "simpson")`,
-         SpeciesRichness = `specnumber(shan)`)
-pond <- select(buttab, SWP:Date)
-div <- cbind(pond, div)
-buttdate <- inner_join(buttab, div)
-# select variables of interst 
-buttdate <- buttdate %>% 
-  select(c("SWP", "Date", "VisitNumber", "CloudCover", "WindSpeed", "Temp",
-           "StartTime", "EndTime", "Observer", "TreeCover",
-           "MidCanopy", "PerNatMA", "NatRichnessMA", "abund", "Shannon", 
-           "Even", "Simpson", "SpeciesRichness"))
-
 #### SITE ONLY ####
 # use iNEXT to calculate Shannon diversity, Simpson diversity, and species richness 
 # calculate the sampling coverage in our study to standardize our values wrt sampling effort 
