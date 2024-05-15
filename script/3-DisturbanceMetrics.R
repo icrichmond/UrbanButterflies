@@ -50,8 +50,8 @@ anthro <- purrr::map(.x = dists, .f = function(x){x %>% group_by(Pond) %>% summa
                                                                                      settper = settarea/totarea, 
                                                                                      roadper = roadarea/totarea,
                                                                                      anthroper = anthroarea/totarea)}) 
-studyponds_m <- as.data.frame(studyponds_m)
-anthrofull <- purrr::map(.x = anthro, .f = function(x){inner_join(x, studyponds_m, by = "Pond")}) %>% 
+studyponds_df <- st_set_geometry(studyponds_m, NULL)
+anthrofull <- purrr::map(.x = anthro, .f = function(x){inner_join(x, studyponds_df, by = "Pond")}) %>% 
   purrr::set_names(., nm = paste0("buffer",b))
 
 #### SAVE ####
