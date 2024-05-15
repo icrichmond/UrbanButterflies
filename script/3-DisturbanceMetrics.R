@@ -1,5 +1,5 @@
 #### PACKAGES #### 
-p <- c("data.table", "dplyr", "stringr", "purrr", "sf", "sp")
+p <- c("data.table", "dplyr", "stringr", "purrr", "sf")
 lapply(p, library, character.only = T)
 
 #### DATA ####
@@ -20,9 +20,7 @@ dist <- dist %>%
 # pond coordinates were obtained from the City of Ottawa and have 
 # a Transverse Mercator projection in meters and a GCS of 
 # GCS North American 1983 (EPSG 4269)
-coordinates(swf) <- c("X_Meters", "Y_Meters")
-proj4string(swf) <- CRS("+proj=tmerc +lat_0=0 +lon_0=-76.5 +k=0.9999 +x_0=304800 +y_0=0 +datum=NAD83 +units=m")
-swf <- st_as_sf(swf)
+swf <- st_as_sf(swf, coords = c("X_Meters", "Y_Meters"), crs = "+proj=tmerc +lat_0=0 +lon_0=-76.5 +k=0.9999 +x_0=304800 +y_0=0 +datum=NAD83 +units=m")
 swf <- rename(swf, Pond = "Pond Name")
 swf$Pond <- str_remove(swf$Pond, "SWF-")
 swf$Pond <- as.double(swf$Pond)
