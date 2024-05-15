@@ -22,7 +22,7 @@ counts$species <- row.names(counts)
 
 
 #### Plot ####
-ggplot(counts, aes(count, reorder(species, count, sum))) + 
+h <- ggplot(counts, aes(count, reorder(species, count, sum))) + 
   geom_bar(stat = 'identity') + 
   geom_text(aes(label = count), hjust = 0) + 
   theme_classic() + 
@@ -31,4 +31,4 @@ ggplot(counts, aes(count, reorder(species, count, sum))) +
   ylab("") + 
   xlab("Abundance")
 
-ggsave("figures/AbundanceHistogram.png")
+ggsave("figures/AbundanceHistogram.png", h, height = 8, width = 8, dpi = 450)
