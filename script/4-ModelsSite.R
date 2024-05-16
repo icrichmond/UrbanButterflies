@@ -164,3 +164,5 @@ saveRDS(ab.sp$AbSp20, "large/AbundanceTopModel1.rds")
 saveRDS(ab.nat$AbNat20, "large/AbundanceTopModel2.rds")
 saveRDS(sr.top, "large/SpeciesRichnessTopModels.rds")
 saveRDS(sh.top, "large/ShannonTopModels.rds")
+
+saveRDS(sitefull, "large/SiteFull.rds")
