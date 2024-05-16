@@ -1,17 +1,21 @@
 #### PACKAGES #### 
-p <- c("ggplot2", "visreg", "patchwork")
+p <- c("ggplot2", "marginaleffects", "patchwork")
 lapply(p, library, character.only = T)
 
 #### DATA #### 
-# abundance model
-ab <- readRDS("large/AbundanceTopModels.rds")
-ab50 <- ab$AbDist50
+# abundance model + data
+sitefull <- readRDS("large/SiteFull.rds")
+ab_dat <- sitefull$full20
+ab_sp <- readRDS("large/AbundanceTopModel1.rds")
+ab_nat <- readRDS("large/AbundanceTopModel2.rds")
+
 # species richness models 
 sr <- readRDS("large/SpeciesRichnessDistModels.rds")
 sr2000 <- sr$SRDist2000
 sr1000 <- sr$SRDist1000
 sr5000 <- sr$SRDist5000
 sr500 <- sr$SRDist500
+
 # shannon models
 sh <- readRDS("large/ShannonDistModels.rds")
 sh1000 <- sh$ShDist1000
@@ -21,27 +25,50 @@ sh5000 <- sh$ShDist5000
 
 #### PLOT #### 
 ## Abundance
-ab50a <- visreg(ab50, xvar = "nspecies", band = FALSE, line.par = list(col = "white"), gg = T) +
-  geom_point(size = 2) + 
-  annotate("text", x = 25, y = 100, label = bquote("Estimate = " ~ .(round(summary(ab50)$coefficients[2,1], 2)) ~ "+/-" ~ .(round(summary(ab50)$coefficients[2,2], 2)))) + 
-  labs(y = "Abundance", x = "Number of Flowering Species")+
+
+ab_sp1 <- plot_predictions(ab_sp, condition = "nspecies") + 
+  geom_point(aes(x = nspecies, y = abund), data = ab_dat) + 
+  annotate("text", x = 30, y = 125, label = bquote("Estimate = " ~ .(round(summary(ab_sp)$coefficients[2,1], 2)) ~ "+/-" ~ .(round(summary(ab_sp)$coefficients[2,2], 2)))) + 
+  annotate("text", x = 31, y = 115, label = bquote("p-value = " ~ .(round(summary(ab_sp)$coefficients[2,4], 2)))) + 
+  labs(x = "Number of Flowering Species", y = "Abundance") + 
   theme_classic()
 
-ab50b <- visreg(ab50, xvar = "avgbloom", band = FALSE, line.par = list(col = "white"), gg = T) +
-  geom_point(size = 2) + 
-  annotate("text", x = 15, y = 125, label = bquote("Estimate = " ~ .(round(summary(ab50)$coefficients[3,1], 2)) ~ "+/-" ~ .(round(summary(ab50)$coefficients[3,2], 2)))) + 
-  labs(y = "Abundance", x = "Average % Blooming Cover")+
+ab_sp2 <- plot_predictions(ab_sp, condition = "avgbloom") +
+  geom_point(aes(x = avgbloom, y = abund), data = ab_dat) + 
+  annotate("text", x = 19, y = 125, label = bquote("Estimate = " ~ .(round(summary(ab_sp)$coefficients[3,1], 2)) ~ "+/-" ~ .(round(summary(ab_sp)$coefficients[3,2], 2)))) + 
+  annotate("text", x = 20, y = 115, label = bquote("p-value = " ~ .(round(summary(ab_sp)$coefficients[3,4], 2)))) + 
+  labs(x = "Average % Blooming Cover", y = "Abundance") + 
   theme_classic()
 
-ab50c <- visreg(ab50, xvar = "nspecies", by = "avgbloom", overlay = T, band = FALSE, 
-                line.par = list(col = "white", alpha = 0), 
-                points.par = list(size = 2), gg = T) +
-  scale_color_viridis_d() + 
-  annotate("text", x = 25, y = 125, label = bquote("Estimate = " ~ .(round(summary(ab50)$coefficients[4,1], 2)) ~ "+/-" ~ .(round(summary(ab50)$coefficients[4,2], 2)))) + 
-  labs(y = "Abundance", x = "Number of Flowering Species", colour = "Average % Blooming Cover") +
+ab_sp3 <- plot_slopes(ab_sp, variables = "nspecies", condition = "avgbloom") +
+  labs(x = "Average % Blooming Cover", y = "Slope of Abundance wrt \nNumber of Flowering Species") + 
   theme_classic()
 
-p1 <- (ab50a/ab50b)|ab50c
+p1 <- (ab_sp1 + ab_sp2)/ab_sp3
+
+
+
+ab_nat1 <- plot_predictions(ab_nat, condition = "nnative") + 
+  geom_point(aes(x = nnative, y = abund), data = ab_dat) + 
+  annotate("text", x = 11, y = 125, label = bquote("Estimate = " ~ .(round(summary(ab_nat)$coefficients[2,1], 2)) ~ "+/-" ~ .(round(summary(ab_sp)$coefficients[2,2], 2)))) + 
+  annotate("text", x = 12, y = 115, label = bquote("p-value = " ~ .(round(summary(ab_nat)$coefficients[2,4], 2)))) + 
+  labs(x = "Number of Native Flowering Species", y = "Abundance") + 
+  theme_classic()
+
+ab_nat2 <- plot_predictions(ab_nat, condition = "avgnatbloom") +
+  geom_point(aes(x = avgnatbloom, y = abund), data = ab_dat) + 
+  annotate("text", x = 9, y = 125, label = bquote("Estimate = " ~ .(round(summary(ab_nat)$coefficients[3,1], 2)) ~ "+/-" ~ .(round(summary(ab_sp)$coefficients[3,2], 2)))) + 
+  annotate("text", x = 10, y = 115, label = bquote("p-value = " ~ .(round(summary(ab_nat)$coefficients[3,4], 2)))) + 
+  labs(x = "Average % Native Blooming Cover", y = "Abundance") + 
+  theme_classic()
+
+ab_nat3 <- plot_slopes(ab_nat, variables = "nnative", condition = "avgnatbloom") +
+  labs(x = "Average % Native Blooming Cover", y = "Slope of Abundance wrt Number \nof Native Flowering Species") + 
+  theme_classic()
+
+
+p1b <- (ab_nat1 + ab_nat2)/ab_nat3
+
 
 ## Species Richness 
 sr2000a <- visreg(sr2000, xvar = "anthroper", line.par = list(col = "black"), gg = T) +
