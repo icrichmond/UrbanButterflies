@@ -30,7 +30,8 @@ sh5000 <- sh$ShDist5000
 #### PLOT #### 
 ## Abundance
 
-ab_sp1 <- plot_predictions(ab_sp, condition = "nspecies") + 
+ab_sp1 <- #plot_predictions(ab_sp, condition = "nspecies") + 
+  ggplot()+ 
   geom_point(aes(x = nspecies, y = abund), data = ab_dat) + 
   annotate("text", x = 30, y = 125, label = bquote("Estimate = " ~ .(round(summary(ab_sp)$coefficients[2,1], 2)) ~ "+/-" ~ .(round(summary(ab_sp)$coefficients[2,2], 2)))) + 
   annotate("text", x = 31, y = 115, label = bquote("p-value = " ~ .(round(summary(ab_sp)$coefficients[2,4], 2)))) + 
@@ -38,7 +39,8 @@ ab_sp1 <- plot_predictions(ab_sp, condition = "nspecies") +
   theme_classic() + 
   theme(axis.text = element_text(size = 10))
 
-ab_sp2 <- plot_predictions(ab_sp, condition = "avgbloom") +
+ab_sp2 <- #plot_predictions(ab_sp, condition = "avgbloom") +
+  ggplot() + 
   geom_point(aes(x = avgbloom, y = abund), data = ab_dat) + 
   annotate("text", x = 19, y = 125, label = bquote("Estimate = " ~ .(round(summary(ab_sp)$coefficients[3,1], 2)) ~ "+/-" ~ .(round(summary(ab_sp)$coefficients[3,2], 2)))) + 
   annotate("text", x = 20, y = 115, label = bquote("p-value = " ~ .(round(summary(ab_sp)$coefficients[3,4], 2)))) + 
