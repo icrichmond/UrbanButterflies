@@ -35,18 +35,21 @@ ab_sp1 <- plot_predictions(ab_sp, condition = "nspecies") +
   annotate("text", x = 30, y = 125, label = bquote("Estimate = " ~ .(round(summary(ab_sp)$coefficients[2,1], 2)) ~ "+/-" ~ .(round(summary(ab_sp)$coefficients[2,2], 2)))) + 
   annotate("text", x = 31, y = 115, label = bquote("p-value = " ~ .(round(summary(ab_sp)$coefficients[2,4], 2)))) + 
   labs(x = "Number of Flowering Species", y = "Abundance") + 
-  theme_classic()
+  theme_classic() + 
+  theme(axis.text = element_text(size = 10))
 
 ab_sp2 <- plot_predictions(ab_sp, condition = "avgbloom") +
   geom_point(aes(x = avgbloom, y = abund), data = ab_dat) + 
   annotate("text", x = 19, y = 125, label = bquote("Estimate = " ~ .(round(summary(ab_sp)$coefficients[3,1], 2)) ~ "+/-" ~ .(round(summary(ab_sp)$coefficients[3,2], 2)))) + 
   annotate("text", x = 20, y = 115, label = bquote("p-value = " ~ .(round(summary(ab_sp)$coefficients[3,4], 2)))) + 
   labs(x = "Average % Blooming Cover", y = "Abundance") + 
-  theme_classic()
+  theme_classic() +
+  theme(axis.text = element_text(size = 10))
 
 ab_sp3 <- plot_slopes(ab_sp, variables = "nspecies", condition = "avgbloom") +
   labs(x = "Average % Blooming Cover", y = "Slope of Abundance wrt \nNumber of Flowering Species") + 
-  theme_classic()
+  theme_classic() + 
+  theme(axis.text = element_text(size = 10))
 
 p1 <- (ab_sp1 + ab_sp2)/ab_sp3
 
@@ -57,7 +60,8 @@ sr_2000 <- plot_predictions(sr2000, condition = "anthroper") +
   annotate("text", x = 0.7, y = 10, label = bquote("Estimate = " ~ .(round(summary(sr2000)$coefficients[2,1], 2)) ~ "+/-" ~ .(round(summary(sr2000)$coefficients[2,2], 2)))) + 
   annotate("text", x = 0.7, y = 9.5, label = bquote("p-value = " ~ .(round(summary(sr2000)$coefficients[2,4], 2)))) + 
   labs(x = "Urbanization (%) at 2,000 m", y = "Species Richness") + 
-  theme_classic()
+  theme_classic() + 
+  theme(axis.text = element_text(size = 10))
 
 
 sr_1000 <- plot_predictions(sr1000, condition = "anthroper") + 
@@ -65,7 +69,8 @@ sr_1000 <- plot_predictions(sr1000, condition = "anthroper") +
   annotate("text", x = 0.7, y = 10, label = bquote("Estimate = " ~ .(round(summary(sr1000)$coefficients[2,1], 2)) ~ "+/-" ~ .(round(summary(sr1000)$coefficients[2,2], 2)))) + 
   annotate("text", x = 0.7, y = 9.5, label = bquote("p-value = " ~ .(round(summary(sr1000)$coefficients[2,4], 2)))) + 
   labs(x = "Urbanization (%) at 1,000 m", y = "Species Richness") + 
-  theme_classic()
+  theme_classic() + 
+  theme(axis.text = element_text(size = 10))
 
 
 sr_5000 <- plot_predictions(sr5000, condition = "anthroper") + 
@@ -73,14 +78,16 @@ sr_5000 <- plot_predictions(sr5000, condition = "anthroper") +
   annotate("text", x = 0.7, y = 10, label = bquote("Estimate = " ~ .(round(summary(sr5000)$coefficients[2,1], 2)) ~ "+/-" ~ .(round(summary(sr5000)$coefficients[2,2], 2)))) + 
   annotate("text", x = 0.7, y = 9.5, label = bquote("p-value = " ~ .(round(summary(sr5000)$coefficients[2,4], 2)))) + 
   labs(x = "Urbanization (%) at 5,000 m", y = "Species Richness") + 
-  theme_classic()
+  theme_classic() + 
+  theme(axis.text = element_text(size = 10))
 
 sr_500 <- plot_predictions(sr500, condition = "anthroper") + 
   geom_point(aes(x = anthroper, y = SpeciesRichness), data = sitefull$full500) + 
   annotate("text", x = 0.7, y = 10, label = bquote("Estimate = " ~ .(round(summary(sr500)$coefficients[2,1], 2)) ~ "+/-" ~ .(round(summary(sr500)$coefficients[2,2], 2)))) + 
   annotate("text", x = 0.7, y = 9.5, label = bquote("p-value = " ~ .(round(summary(sr500)$coefficients[2,4], 2)))) + 
   labs(x = "Urbanization (%) at 500 m", y = "Species Richness") + 
-  theme_classic()
+  theme_classic() + 
+  theme(axis.text = element_text(size = 10))
 
 p2 <- (sr_2000 + sr_1000)/(sr_5000 + sr_500) + plot_annotation(tag_levels = 'A')
 
@@ -90,7 +97,8 @@ sh_2000 <- plot_predictions(sh2000, condition = "anthroper") +
   annotate("text", x = 0.7, y = 10, label = bquote("Estimate = " ~ .(round(summary(sh2000)$coefficients[2,1], 2)) ~ "+/-" ~ .(round(summary(sh2000)$coefficients[2,2], 2)))) + 
   annotate("text", x = 0.7, y = 9.5, label = bquote("p-value = " ~ .(round(summary(sh2000)$coefficients[2,4], 2)))) + 
   labs(x = "Urbanization (%) at 2,000 m", y = "Shannon Diversity") + 
-  theme_classic()
+  theme_classic() + 
+  theme(axis.text = element_text(size = 10))
 
 
 sh_1000 <- plot_predictions(sh1000, condition = "anthroper") + 
@@ -98,7 +106,8 @@ sh_1000 <- plot_predictions(sh1000, condition = "anthroper") +
   annotate("text", x = 0.7, y = 10, label = bquote("Estimate = " ~ .(round(summary(sh1000)$coefficients[2,1], 2)) ~ "+/-" ~ .(round(summary(sh1000)$coefficients[2,2], 2)))) + 
   annotate("text", x = 0.7, y = 9.5, label = bquote("p-value = " ~ .(round(summary(sh1000)$coefficients[2,4], 2)))) + 
   labs(x = "Urbanization (%) at 1,000 m", y = "Shannon Diversity") + 
-  theme_classic()
+  theme_classic() + 
+  theme(axis.text = element_text(size = 10))
 
 
 sh_5000 <- plot_predictions(sh5000, condition = "anthroper") + 
@@ -106,14 +115,16 @@ sh_5000 <- plot_predictions(sh5000, condition = "anthroper") +
   annotate("text", x = 0.7, y = 10, label = bquote("Estimate = " ~ .(round(summary(sh5000)$coefficients[2,1], 2)) ~ "+/-" ~ .(round(summary(sh5000)$coefficients[2,2], 2)))) + 
   annotate("text", x = 0.7, y = 9.5, label = bquote("p-value = " ~ .(round(summary(sh5000)$coefficients[2,4], 2)))) + 
   labs(x = "Urbanization (%) at 5,000 m", y = "Shannon Diversity") + 
-  theme_classic()
+  theme_classic() + 
+  theme(axis.text = element_text(size = 10))
 
 sh_500 <- plot_predictions(sh500, condition = "anthroper") + 
   geom_point(aes(x = anthroper, y = Shannon), data = sitefull$full500) + 
   annotate("text", x = 0.7, y = 10, label = bquote("Estimate = " ~ .(round(summary(sh500)$coefficients[2,1], 2)) ~ "+/-" ~ .(round(summary(sh500)$coefficients[2,2], 2)))) + 
   annotate("text", x = 0.7, y = 9.5, label = bquote("p-value = " ~ .(round(summary(sh500)$coefficients[2,4], 2)))) + 
   labs(x = "Urbanization (%) at 500 m", y = "Shannon Diversity") + 
-  theme_classic()
+  theme_classic() + 
+  theme(axis.text = element_text(size = 10))
 
 p3 <- (sh_1000 + sh_2000)/(sh_5000 + sh_500 ) + plot_annotation(tag_levels = 'A')
 
