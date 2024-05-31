@@ -195,15 +195,25 @@ We investigate the top models at each buffer distance to see which variables are
 
 ### Abundance
 
-**Table S9a.** Summary table for abundance disturbance model at 50 m buffer distance. We present 50 m distance because the top model is a local effect (flower diversity and average % bloom) measured at the pond, so buffer distance is not relevant for abundance.
+**Table S9a.** Summary table for all plants model at 50 m buffer distance. We present 50 m distance because the top model is a local effect (flower diversity and average % bloom) measured at the pond, so buffer distance is not relevant for abundance.
 
 ```{r, echo = F, eval=T}
 library(magrittr)
-ab <- readRDS("large/AbundanceTopModels.rds")
-ab <- ab$AbDist50 
+ab <- readRDS("large/AbundanceTopModel1.rds")
 names(ab$coefficients) <- c('Intercept', 'Number of Flowering Species', "Avg. % Bloom", "Interaction")
 ab %>% broom::tidy() %>% knitr::kable()
 ```
+
+
+**Table S9b.** Summary table for native plants model at 50 m buffer distance. We present 50 m distance because the top model is a local effect (native flower diversity and average % native bloom) measured at the pond, so buffer distance is not relevant for abundance.
+
+```{r, echo = F, eval=T}
+library(magrittr)
+ab <- readRDS("large/AbundanceTopModel2.rds")
+names(ab$coefficients) <- c('Intercept', 'Number of Native Flowering Species', "Avg. % Native Bloom", "Interaction")
+ab %>% broom::tidy() %>% knitr::kable()
+```
+
 
 ### Species Richness
 
