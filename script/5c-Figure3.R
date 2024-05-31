@@ -48,6 +48,8 @@ ab_sp2 <- plot_predictions(ab_sp, condition = "avgbloom") +
 
 ab_sp3 <- plot_slopes(ab_sp, variables = "nspecies", condition = "avgbloom") +
   labs(x = "Average % Blooming Cover", y = "Slope of Abundance wrt \nNumber of Flowering Species") + 
+  annotate("text", x = 19, y = 125, label = bquote("Estimate = " ~ .(round(summary(ab_sp)$coefficients[4,1], 2)) ~ "+/-" ~ .(round(summary(ab_sp)$coefficients[4,2], 2)))) + 
+  annotate("text", x = 20, y = 115, label = bquote("p-value = " ~ .(round(summary(ab_sp)$coefficients[4,4], 2)))) + 
   theme_classic() + 
   theme(axis.text = element_text(size = 10))
 
