@@ -7,23 +7,20 @@ p <- c("sf", "osmdata", "ggplot2", "ggmap", "ggspatial", "dplyr", "purrr")
 lapply(p, library, character.only=T)
 
 #### Load Data ####
-ponds <- readRDS("large/StudyPondsSpatial.rds")
+ponds <- read_sf("output/StudyPondsSpatial.gpkg")
 ponds <- st_transform(ponds, 4326)
 ponds <- ponds %>%
-  mutate(lat = unlist(map(ponds$geometry,1)),
-         long = unlist(map(ponds$geometry,2)))
+  mutate(lat = unlist(map(ponds$geom,1)),
+         long = unlist(map(ponds$geom,2)))
 
 
 #### Study Site Figure ####
 # Note: for this code to work you need a Google API with Geocoding and Maps Static enabled
 register_google(key = "AIzaSyDlRF5BYeskCH7qWtq13WUV5ifG9Q1kT1c")
 ss <- qmap(location = "Terry Carisse Park, Ottawa, Ontario", zoom = 10, maptype = "satellite", source = "google") +
-  geom_point(data = ponds, aes(x = lat, y = long, colour = Disturbance), size = 3) + 
-  coord_sf(crs = st_crs(4326), expand = FALSE) + 
-  scale_colour_viridis_d()+ 
-  labs(colour = "Disturbance") +
-  theme(legend.position = c(0.1, 0.16),
-        panel.grid = element_line(color = '#323232', size = 0.2),
+  geom_point(data = ponds, aes(x = lat, y = long), colour = "yellow", size = 3) + 
+  coord_sf(crs = st_crs(4326), expand = FALSE) +
+  theme(panel.grid = element_line(color = '#323232', size = 0.2),
         axis.text = element_text(size = 11, color = 'black'),
         axis.title = element_blank()) +
   annotation_scale(location = "bl", width_hint = 0.3, pad_y = unit(0.3, "in"))
@@ -41,7 +38,7 @@ bb <- c(
 #### Inset Figure ####
 # download OSM data 
 ## Canada boundary
-bounds <- opq(getbb('Ontario')) %>%
+bounds <- opq(getbb('Ontario'), timeout = 150) %>%
   add_osm_feature(key = 'admin_level', value = '4') %>%
   osmdata_sf() %>%
   unname_osmdata_sf()
