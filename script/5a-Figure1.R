@@ -18,7 +18,7 @@ ponds <- ponds %>%
 # Note: for this code to work you need a Google API with Geocoding and Maps Static enabled
 register_google(key = "AIzaSyDlRF5BYeskCH7qWtq13WUV5ifG9Q1kT1c")
 ss <- qmap(location = "Terry Carisse Park, Ottawa, Ontario", zoom = 10, maptype = "satellite", source = "google") +
-  geom_point(data = ponds, aes(x = lat, y = long), colour = "yellow", size = 3) + 
+  geom_point(data = ponds, aes(x = lat, y = long), colour = "black", size = 3, shape = 1, stroke = 1) + 
   coord_sf(crs = st_crs(4326), expand = FALSE) +
   theme(panel.grid = element_line(color = '#323232', size = 0.2),
         axis.text = element_text(size = 11, color = 'black'),
@@ -44,7 +44,7 @@ bounds <- opq(getbb('Ontario'), timeout = 150) %>%
   unname_osmdata_sf()
 mp <- bounds$osm_multipolygons
 mp <- mp[mp$name %in% c("Ontario", "Québec"), ]
-st_crs(mp) <- 426
+st_crs(mp) <- 4326
 
 on <- ggplot(mp) + 
   geom_sf(fill = '#c1d1aa', size = 0.3) +
@@ -69,10 +69,10 @@ on <- ggplot(mp) +
 ss +
     annotation_custom(
       ggplotGrob(on),
-      xmin = -75.38,
-      xmax = -75.75,
-      ymin = 44.9,
-      ymax = 45.18
+      xmin = -75.3,
+      xmax = -75.74,
+      ymin = 44.96,
+      ymax = 45.12
     )
 
 
