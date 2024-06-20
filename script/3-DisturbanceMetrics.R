@@ -1,21 +1,17 @@
-#### PACKAGES #### 
+
+# Packages ----------------------------------------------------------------
 p <- c("data.table", "dplyr", "stringr", "purrr", "sf")
 lapply(p, library, character.only = T)
 
-#### DATA ####
+
+# Data --------------------------------------------------------------------
 dist <- fread("input/SamplingArea.csv")
 landcov <- st_read("large/LandCover2011_Rivers.shp")
 swf <- fread("input/CoorMetre.csv", quote="")
 
-#### DISTURBANCE CLASSIFICATION #### 
-# set NA = 0
-dist$PerCut[is.na(dist$PerCut)] <- 0 
-# ponds with >= 30% mowed, classify them as disturbed 
-# ponds with < 30% mowed, classify them as undisturbed 
-dist <- dist %>% 
-  mutate(Disturbance = if_else(PerCut >= 30, "Disturbed", "Undisturbed"))
 
-#### LANDCOVER ####
+# Landcover ---------------------------------------------------------------
+
 ## Stormwater Facilities
 # pond coordinates were obtained from the City of Ottawa and have 
 # a Transverse Mercator projection in meters and a GCS of 
@@ -25,35 +21,41 @@ swf <- rename(swf, Pond = "Pond Name")
 swf$Pond <- str_remove(swf$Pond, "SWF-")
 swf$Pond <- as.double(swf$Pond)
 studyponds <- inner_join(swf, dist)
+
 ## Buffers
 # transform to a metric coordinate system that matches the landcover layer (units = m)
 studyponds_m <- st_transform(studyponds, 32189)
 landcov <- st_transform(landcov, 32189)
-# produce 20 m, 50 m, 100 m, 200 m, 500 m, 1 km, 2 km, and 5 km buffers
-b <- c(20, 50, 100, 200, 500, 1000, 2000, 5000)
-# calculate buffers at each distance for all study ponds
-buffers <- purrr::map(.x = b,
-             .f = function(x){st_buffer(studyponds_m, x)}) %>%
-  purrr::set_names(., nm = paste0("buffer", b))
-## Intersect buffers with landcover
-ints <- purrr::map(.x = buffers, .f = function(x){st_intersection(x, landcov)})%>%
-  purrr::set_names(., nm = paste0("int", b))
-ints <- purrr::map(.x = ints, .f = function(x){st_make_valid(x)})
-## Metrics of disturbance
-dists <- purrr::map(.x = ints, .f = function(x){x %>% group_by(Pond, LABEL) %>% summarise(geometry = st_union(geometry))}) %>% 
-  purrr::set_names(., nm = paste0("dist", b))
-dists <- purrr::map(.x = dists, .f = function(x){x %>% group_by(Pond, LABEL) %>% mutate(area = st_area(geometry))})
-anthro <- purrr::map(.x = dists, .f = function(x){x %>% group_by(Pond) %>% summarise(totarea = sum(area), 
-                                                                                     settarea = sum(area[LABEL == 'Settlement']),
-                                                                                     roadarea = sum(area[LABEL == 'Transportation']),
-                                                                                     anthroarea = sum(area[LABEL == 'Settlement' | LABEL == 'Transportation']),
-                                                                                     settper = settarea/totarea, 
-                                                                                     roadper = roadarea/totarea,
-                                                                                     anthroper = anthroarea/totarea)}) 
-studyponds_df <- st_set_geometry(studyponds_m, NULL)
-anthrofull <- purrr::map(.x = anthro, .f = function(x){inner_join(x, studyponds_df, by = "Pond")}) %>% 
-  purrr::set_names(., nm = paste0("buffer",b))
+# produce 400 m buffer as per Rivest & Kharouba 2021
+buffer <- st_buffer(studyponds_m, 400)
 
-#### SAVE ####
+## Intersect buffers with landcover
+ints <- st_intersection(buffer, landcov) %>% 
+  st_make_valid()
+
+## Metrics of disturbance
+un <- ints %>% 
+  group_by(Pond, LABEL) %>% 
+  summarise(geometry = st_union(geometry))
+
+dists <- un %>% 
+  group_by(Pond, LABEL) %>% 
+  mutate(area = st_area(geometry))
+
+anthro <- dists %>% 
+  group_by(Pond) %>% 
+  summarise(totarea = sum(area), 
+            settarea = sum(area[LABEL == 'Settlement']),
+            roadarea = sum(area[LABEL == 'Transportation']),
+            anthroarea = sum(area[LABEL == 'Settlement' | LABEL == 'Transportation']),
+            settper = settarea/totarea, 
+            roadper = roadarea/totarea,
+            anthroper = anthroarea/totarea)
+
+studyponds_df <- st_set_geometry(studyponds_m, NULL)
+anthrofull <- inner_join(anthro, studyponds_df, by = "Pond")
+
+
+# Save --------------------------------------------------------------------
 write_sf(studyponds, "output/StudyPondsSpatial.gpkg")
-saveRDS(anthrofull, "output/AnthroFull.rds")
+saveRDS(anthrofull, "output/AnthroFull.gpkg")
