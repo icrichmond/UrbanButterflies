@@ -1,11 +1,16 @@
-#### PACKAGES #### 
+# Packages ----------------------------------------------------------------
+
 p <- c("readr", "dplyr", "tibble", "stringr", "tidyr", "iNEXT", "ggplot2", "vegan")
 lapply(p, library, character.only = T)
 
-#### DATA ####
+
+# Data --------------------------------------------------------------------
+
 buttraw <- read_csv("input/ButterflyRawData.csv")
 
-#### SPECIES NAMES ####
+
+# Species Names -----------------------------------------------------------
+
 # need to transpose the dataset 
 buttsp <- as.data.frame(t(buttraw[,-1]))
 # convert row names to a column and add genus and species columns
@@ -23,7 +28,9 @@ buttsp[buttsp$ScientificNames=="Polites Themistocles", "species"] <- "themistocl
 buttsp <- mutate(buttsp, SpeciesCode = toupper(paste0(str_sub(Genus, 1, 3), "", str_sub(species, 1, 3))))
 
 
-#### ABUNDANCE ####
+
+# Abundance ---------------------------------------------------------------
+
 # separate columns with species names so they can be replaced with species codes
 buttab1 <- select(buttraw, `Scientific Name`) %>% 
   rename(SWP = `Scientific Name`)
@@ -43,8 +50,9 @@ buttab <- buttab %>%
 # save
 write.csv(buttab, "output/ButterflyAbundance.csv")
 
-#### DIVERSITY & SPECIES RICHNESS #### 
-#### SITE ONLY ####
+
+# Diversity ---------------------------------------------------------------
+
 # use iNEXT to calculate Shannon diversity, Simpson diversity, and species richness 
 # calculate the sampling coverage in our study to standardize our values wrt sampling effort 
 nextd <- sapply(buttab2, as.numeric)
@@ -91,6 +99,8 @@ buttab_site$SWP <- as.character(buttab_site$SWP)
 # join all metrics
 butt_site <- inner_join(buttab_site, rarediv_w)
 
-#### SAVE ####
+
+# Save --------------------------------------------------------------------
+
 write_csv(buttsp, "output/ButterflySpecies.csv")
 write_csv(butt_site, "output/ButterflyCleanbySite.csv")
