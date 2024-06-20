@@ -1,8 +1,4 @@
-
-# Packages ----------------------------------------------------------------
-p <- c("data.table", "dplyr", "stringr", "purrr", "sf")
-lapply(p, library, character.only = T)
-
+source('script/0-Packages.R')
 
 # Data --------------------------------------------------------------------
 dist <- fread("input/SamplingArea.csv")

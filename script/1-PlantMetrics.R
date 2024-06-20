@@ -1,11 +1,13 @@
-#### PACKAGES #### 
-p <- c("readr", "dplyr", "tidyr", "stringr")
-lapply(p, library, character.only = T)
+source('script/0-Packages.R')
 
-#### DATA ####
+
+# Data --------------------------------------------------------------------
+
 plantraw <- read_csv("input/PlantRawData.csv")
 
-#### CLEAN-UP ####
+
+# Clean-Up ----------------------------------------------------------------
+
 plantraw <- rename(plantraw, Pond = `...1`)
 plantraw <- plantraw %>%
   mutate(across(q1:q20, as.numeric))
@@ -24,7 +26,9 @@ plant$scientific_name <- as.factor(plant$scientific_name)
 plant$scientific_name <- recode(plant$scientific_name, "No blooming" = "NoBlooming")
 plant$scientific_name <- replace_na(plant$scientific_name, "NoBlooming")
 
-#### SPECIES RICHNESS #### 
+
+# Species Richness --------------------------------------------------------
+
 ## Total Species Richness 
 # remove PATH and NoBlooming for this calculation since they are not real species 
 plantclean <- plant %>% 
@@ -43,7 +47,9 @@ plantclean <- inner_join(pnsp, plantclean)
 plantclean <- plantclean %>% 
   mutate(pernatsp = (nnative/nspecies))
 
-#### PERCENT BLOOMING ####
+
+# Percent Blooming --------------------------------------------------------
+
 ## Average Percent Bloom
 # average by quadrat
 papb <- plant %>% 
@@ -80,6 +86,8 @@ plantcleansum <- plantclean %>%
 
 plantclean_site <- inner_join(plantclean_site, plantcleansum)
 
-#### SAVE #### 
+
+# Save --------------------------------------------------------------------
+
 write_csv(plantclean_site, "output/PlantCleanbySite.csv")
 write_csv(plantclean, "output/PlantCleanbyDate.csv")

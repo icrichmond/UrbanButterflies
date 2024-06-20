@@ -1,8 +1,4 @@
-# Packages ----------------------------------------------------------------
-
-p <- c("readr", "dplyr", "tibble", "stringr", "tidyr", "iNEXT", "ggplot2", "vegan")
-lapply(p, library, character.only = T)
-
+source('script/0-Packages.R')
 
 # Data --------------------------------------------------------------------
 
