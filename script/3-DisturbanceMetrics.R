@@ -54,4 +54,4 @@ anthrofull <- inner_join(anthro, studyponds_df, by = "Pond")
 
 # Save --------------------------------------------------------------------
 write_sf(studyponds, "output/StudyPondsSpatial.gpkg")
-saveRDS(anthrofull, "output/AnthroFull.gpkg")
+write_sf(anthrofull, "output/AnthroFull.gpkg")
