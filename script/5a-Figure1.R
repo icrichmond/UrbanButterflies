@@ -2,11 +2,11 @@
 # Author: Isabella Richmond 
 # This script is for producing spatial figures for this manuscript
 
-#### Load Packages ####
-p <- c("sf", "osmdata", "ggplot2", "ggmap", "ggspatial", "dplyr", "purrr")
-lapply(p, library, character.only=T)
+source('script/0-Packages.R')
 
-#### Load Data ####
+
+# Data --------------------------------------------------------------------
+
 ponds <- read_sf("output/StudyPondsSpatial.gpkg")
 ponds <- st_transform(ponds, 4326)
 ponds <- ponds %>%
@@ -14,7 +14,9 @@ ponds <- ponds %>%
          long = unlist(map(ponds$geom,2)))
 
 
-#### Study Site Figure ####
+
+# Study Site --------------------------------------------------------------
+
 # Note: for this code to work you need a Google API with Geocoding and Maps Static enabled
 register_google(key = "AIzaSyDlRF5BYeskCH7qWtq13WUV5ifG9Q1kT1c")
 ss <- qmap(location = "Terry Carisse Park, Ottawa, Ontario", zoom = 10, maptype = "satellite", source = "google") +
@@ -35,7 +37,9 @@ bb <- c(
 )
 
 
-#### Inset Figure ####
+
+# Inset -------------------------------------------------------------------
+
 # download OSM data 
 ## Canada boundary
 bounds <- opq(getbb('Ontario'), timeout = 150) %>%
@@ -76,5 +80,7 @@ ss +
     )
 
 
-#### Save ####
+
+# Save --------------------------------------------------------------------
+
 ggsave("figures/StudyArea.jpg", width = 4542, height = 2882, units = "px", dpi = 450)
