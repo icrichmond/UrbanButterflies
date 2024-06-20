@@ -13,9 +13,9 @@ pb <- inner_join(plant, butt, by = join_by("Pond" == "SWP"))
 
 # Model -------------------------------------------------------------------
 
-mod_ab <- lmer(Abundance ~ 1 + (nspecies + avgbloom|Niche.Breadth), data = pn)
-mod_sh <- lm(Shannon ~ nspecies + avgbloom, data = pb)
-mod_sr <- lm(SpeciesRichness ~ nspecies + avgbloom, data = pb)
+mod_ab <- lmer(Abundance ~ 1 + (nspecies + avgbloom | Niche.Breadth), data = pn)
+mod_sh <- lm(Shannon ~ nspecies * avgbloom, data = pb)
+mod_sr <- lm(SpeciesRichness ~ nspecies * avgbloom, data = pb)
 
 # Diagnostics -------------------------------------------------------------
 

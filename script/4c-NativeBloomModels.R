@@ -13,10 +13,10 @@ pb <- inner_join(plant, butt, by = join_by("Pond" == "SWP"))
 
 # Model -------------------------------------------------------------------
 
-mod_ab <- lmer(Abundance ~ 1 + (nnative + avgnatbloom|Niche.Breadth), data = pn)
+mod_ab <- lmer(Abundance ~ 1 + (nnative + avgnatbloom | Niche.Breadth), data = pn)
 # model fails to converge
-mod_sh <- lm(Shannon ~ nnative + avgnatbloom, data = pb)
-mod_sr <- lm(SpeciesRichness ~ nnative + avgnatbloom, data = pb)
+mod_sh <- lm(Shannon ~ nnative * avgnatbloom, data = pb)
+mod_sr <- lm(SpeciesRichness ~ nnative * avgnatbloom, data = pb)
 
 # Diagnostics -------------------------------------------------------------
 
