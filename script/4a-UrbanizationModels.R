@@ -11,7 +11,7 @@ ab <- inner_join(anthro, butt, by = join_by("Pond" == "SWP"))
 
 # Model -------------------------------------------------------------------
 
-mod_ab <- lmer(Abundance ~ 1 + (anthroper|Niche.Breadth), data = an)
+mod_ab <- lmer(Abundance ~ 1 + (1 + anthroper | Niche.Breadth), data = an)
 mod_sh <- lm(Shannon ~ anthroper, data = ab)
 mod_sr <- lm(SpeciesRichness ~ anthroper, data = ab)
 
