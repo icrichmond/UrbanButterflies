@@ -23,22 +23,35 @@ studyponds <- inner_join(swf, dist)
 studyponds_m <- st_transform(studyponds, 32189)
 landcov <- st_transform(landcov, 32189)
 # produce 400 m buffer as per Rivest & Kharouba 2021
-buffer <- st_buffer(studyponds_m, 400)
+buffer_400 <- st_buffer(studyponds_m, 400)
+buffer_50 <- st_buffer(studyponds_m, 50)
 
 ## Intersect buffers with landcover
-ints <- st_intersection(buffer, landcov) %>% 
+ints_400 <- st_intersection(buffer_400, landcov) %>% 
+  st_make_valid()
+
+ints_50 <- st_intersection(buffer_50, landcov) %>% 
   st_make_valid()
 
 ## Metrics of disturbance
-un <- ints %>% 
+un_400 <- ints_400 %>% 
   group_by(Pond, LABEL) %>% 
   summarise(geometry = st_union(geometry))
 
-dists <- un %>% 
+un_50 <- ints_50 %>% 
+  group_by(Pond, LABEL) %>% 
+  summarise(geometry = st_union(geometry))
+
+
+dists_400 <- un_400 %>% 
   group_by(Pond, LABEL) %>% 
   mutate(area = st_area(geometry))
 
-anthro <- dists %>% 
+dists_50 <- un_50 %>% 
+  group_by(Pond, LABEL) %>% 
+  mutate(area = st_area(geometry))
+
+anthro_400 <- dists_400 %>% 
   group_by(Pond) %>% 
   summarise(totarea = sum(area), 
             settarea = sum(area[LABEL == 'Settlement']),
@@ -48,8 +61,20 @@ anthro <- dists %>%
             roadper = roadarea/totarea,
             anthroper = anthroarea/totarea)
 
-studyponds_df <- st_set_geometry(studyponds_m, NULL)
-anthrofull <- inner_join(anthro, studyponds_df, by = "Pond")
+anthro_50 <- dists_50 %>% 
+  group_by(Pond) %>% 
+  summarise(totarea = sum(area), 
+            settarea = sum(area[LABEL == 'Settlement']),
+            roadarea = sum(area[LABEL == 'Transportation']),
+            anthroarea = sum(area[LABEL == 'Settlement' | LABEL == 'Transportation']),
+            settper = settarea/totarea, 
+            roadper = roadarea/totarea,
+            anthroper = anthroarea/totarea)
+
+
+anthro <- inner_join(st_set_geometry(anthro_50, NULL), st_set_geometry(anthro_400, NULL), by = "Pond", suffix = c("_50", "_400"))
+
+anthrofull <- inner_join(anthro, studyponds, by = "Pond")
 
 
 # Save --------------------------------------------------------------------
