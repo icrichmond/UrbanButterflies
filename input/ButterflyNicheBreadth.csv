@@ -1,64 +1,64 @@
-﻿Pond,Niche Breadth,Abundance
-1127,Wetland specialist,0
-1133,Wetland specialist,0
-1134,Wetland specialist,0
-1204,Wetland specialist,23
-1206,Wetland specialist,0
-1209,Wetland specialist,14
-1220,Wetland specialist,1
-1227,Wetland specialist,1
-1236,Wetland specialist,23
-1306,Wetland specialist,15
-1310,Wetland specialist,10
-1314,Wetland specialist,0
-1347,Wetland specialist,1
-1352,Wetland specialist,19
-1428,Wetland specialist,8
-1501,Wetland specialist,32
-1610,Wetland specialist,0
-1616,Wetland specialist,14
-1622,Wetland specialist,0
-1809,Wetland specialist,2
-1914,Wetland specialist,13
-1127,Wetland associated,32
-1133,Wetland associated,50
-1134,Wetland associated,37
-1204,Wetland associated,41
-1206,Wetland associated,34
-1209,Wetland associated,29
-1220,Wetland associated,41
-1227,Wetland associated,24
-1236,Wetland associated,101
-1306,Wetland associated,59
-1310,Wetland associated,105
-1314,Wetland associated,15
-1347,Wetland associated,33
-1352,Wetland associated,53
-1428,Wetland associated,66
-1501,Wetland associated,67
-1610,Wetland associated,10
-1616,Wetland associated,23
-1622,Wetland associated,18
-1809,Wetland associated,65
-1914,Wetland associated,36
-1127,Non-wetland,7
-1133,Non-wetland,1
-1134,Non-wetland,2
-1204,Non-wetland,4
-1206,Non-wetland,0
-1209,Non-wetland,1
-1220,Non-wetland,12
-1227,Non-wetland,1
-1236,Non-wetland,5
-1306,Non-wetland,6
-1310,Non-wetland,3
-1314,Non-wetland,1
-1347,Non-wetland,3
-1352,Non-wetland,7
-1428,Non-wetland,8
-1501,Non-wetland,8
-1610,Non-wetland,0
-1616,Non-wetland,3
-1622,Non-wetland,0
-1809,Non-wetland,5
-1914,Non-wetland,4
+﻿Pond,Niche Breadth,Abundance,Species Richness
+1127,Wetland specialist,0,0
+1133,Wetland specialist,0,0
+1134,Wetland specialist,0,0
+1204,Wetland specialist,23,3
+1206,Wetland specialist,0,0
+1209,Wetland specialist,14,2
+1220,Wetland specialist,1,1
+1227,Wetland specialist,1,1
+1236,Wetland specialist,23,1
+1306,Wetland specialist,15,1
+1310,Wetland specialist,10,1
+1314,Wetland specialist,0,0
+1347,Wetland specialist,1,1
+1352,Wetland specialist,19,2
+1428,Wetland specialist,8,1
+1501,Wetland specialist,32,1
+1610,Wetland specialist,0,0
+1616,Wetland specialist,14,1
+1622,Wetland specialist,0,0
+1809,Wetland specialist,2,1
+1914,Wetland specialist,13,1
+1127,Wetland associated,32,7
+1133,Wetland associated,50,4
+1134,Wetland associated,37,5
+1204,Wetland associated,41,7
+1206,Wetland associated,34,4
+1209,Wetland associated,29,4
+1220,Wetland associated,41,9
+1227,Wetland associated,24,6
+1236,Wetland associated,101,6
+1306,Wetland associated,59,5
+1310,Wetland associated,105,7
+1314,Wetland associated,15,4
+1347,Wetland associated,33,6
+1352,Wetland associated,53,5
+1428,Wetland associated,66,7
+1501,Wetland associated,67,7
+1610,Wetland associated,10,3
+1616,Wetland associated,23,7
+1622,Wetland associated,18,2
+1809,Wetland associated,65,9
+1914,Wetland associated,36,6
+1127,Non-wetland,7,2
+1133,Non-wetland,1,0
+1134,Non-wetland,2,2
+1204,Non-wetland,4,2
+1206,Non-wetland,0,0
+1209,Non-wetland,1,1
+1220,Non-wetland,12,4
+1227,Non-wetland,1,1
+1236,Non-wetland,5,2
+1306,Non-wetland,6,2
+1310,Non-wetland,3,1
+1314,Non-wetland,1,0
+1347,Non-wetland,3,3
+1352,Non-wetland,7,3
+1428,Non-wetland,8,2
+1501,Non-wetland,8,4
+1610,Non-wetland,0,0
+1616,Non-wetland,3,1
+1622,Non-wetland,0,0
+1809,Non-wetland,5,3
+1914,Non-wetland,4,2
