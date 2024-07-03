@@ -13,7 +13,8 @@ pb <- inner_join(plant, butt, by = join_by("Pond" == "SWP"))
 
 # Model -------------------------------------------------------------------
 
-mod_ab <- lmer(Abundance ~ 1 + (nspecies + avgbloom | Niche.Breadth), data = pn)
+mod_ab <- glmer(Abundance ~ 1 + nspecies + avgbloom + (nspecies + avgbloom | Niche.Breadth), family = poisson(), data = pn)
+mod_n_sr <- glmer(Species.Richness ~ 1 +  nspecies + avgbloom + (nspecies + avgbloom | Niche.Breadth), family = poisson(), data = pn)
 mod_sh <- lm(Shannon ~ nspecies * avgbloom, data = pb)
 mod_sr <- lm(SpeciesRichness ~ nspecies * avgbloom, data = pb)
 
@@ -23,6 +24,7 @@ source('script/function-ResidPlots.R')
 
 pdf('figures/diagnostics/TotalBloomModels.pdf')
 resid_plots(mod_ab, "Abundance")
+resid_plots(mod_n_sr, "Niche Species Richness")
 resid_plots(mod_sh, "Shannon")
 resid_plots(mod_sr, "Species Richness")
 dev.off()
@@ -31,5 +33,6 @@ dev.off()
 # Save --------------------------------------------------------------------
 
 saveRDS(mod_ab, 'large/TotAbund.rds')
+saveRDS(mod_n_sr, 'large/TotNicheSR.rds')
 saveRDS(mod_sh, 'large/TotShann.rds')
 saveRDS(mod_sr, 'large/TotSR.rds')

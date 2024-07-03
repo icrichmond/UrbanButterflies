@@ -62,6 +62,9 @@ varying_slopes <- function(){
 # Urbanization ------------------------------------------------------------
 
 # Abundance 
+plot_slopes(urb_ab, variables = "Niche.Breadth", condition = "anthroper") 
+  geom_point(aes(x = anthroper, y = Abundance, colour = Niche.Breadth), data = anp) + 
+  theme_classic()
 
 # Shannon 
 

@@ -13,8 +13,8 @@ pb <- inner_join(plant, butt, by = join_by("Pond" == "SWP"))
 
 # Model -------------------------------------------------------------------
 
-mod_ab <- lmer(Abundance ~ 1 + (nnative + avgnatbloom | Niche.Breadth), data = pn)
-# model fails to converge
+mod_ab <- glmer(Abundance ~ 1 + nnative + avgnatbloom + (nnative + avgnatbloom | Niche.Breadth), family = poisson(), data = pn)
+mod_n_sr <- glmer(Species.Richness ~ 1 + nnative + avgnatbloom + (nnative + avgnatbloom | Niche.Breadth), family = poisson(), data = pn)
 mod_sh <- lm(Shannon ~ nnative * avgnatbloom, data = pb)
 mod_sr <- lm(SpeciesRichness ~ nnative * avgnatbloom, data = pb)
 
@@ -24,6 +24,7 @@ source('script/function-ResidPlots.R')
 
 pdf('figures/diagnostics/NativeBloomModels.pdf')
 resid_plots(mod_ab, "Abundance")
+resid_plots(mod_n_sr, "Niche Species Richness")
 resid_plots(mod_sh, "Shannon")
 resid_plots(mod_sr, "Species Richness")
 dev.off()
@@ -32,5 +33,6 @@ dev.off()
 # Save --------------------------------------------------------------------
 
 saveRDS(mod_ab, 'large/NatAbund.rds')
+saveRDS(mod_n_sr, 'large/NatNicheSR.rds')
 saveRDS(mod_sh, 'large/NatShann.rds')
 saveRDS(mod_sr, 'large/NatSR.rds')
