@@ -7,10 +7,35 @@ format:
     embed-resources: true
 ---
 
+```{r}
+#| echo: false
+#| eval: true
+#| message: false
+#| warning: false
+#| label: setup
+
+
+source('script/0-Packages.R')
+
+plant <- read.csv('output/PlantCleanbySite.csv') %>% 
+  mutate(Pond = str_remove(Pond, "SWF-"),
+         Pond = as.numeric(Pond))
+anthro <- st_read("output/AnthroFull.gpkg")
+niche <- read.csv('input/ButterflyNicheBreadth.csv')
+butt <- read.csv('output/ButterflyCleanbySite.csv')
+
+an <- left_join(niche, anthro, by = "Pond")
+anp <- left_join(an, plant, by = "Pond")
+ab <- inner_join(anthro, butt, by = join_by("Pond" == "SWP"))
+abp <- inner_join(ab, plant, by = "Pond")
+
+```
+
+
 (\*) University of Ottawa, Department of Earth and Environmental Sciences, 150, Louis-Pasteur Private, Ottawa, Ontario, Canada, K1N 6N5\
 email: [jfort073\@uottawa.ca](mailto:jfort073@uottawa.ca){.email}
 
-This supplementary information file contains (1) variable descriptions, (2) descriptive statistics for each study site, (3) AIC tables ranking the performance of each buffer distance for butterfly abundance, species richness, and Shannon diversity (4) AIC tables ranking different models at each of the top performing buffer distances for butterfly abundance, species richness, and Shannon diversity, and (5) summary tables for the top ranking model, disturbance in all cases, at the top performing buffer distance for butterfly abundance, species richness, and Shannon diversity. All associated code can be found at the paper's associated GitHub repository, [here](https://github.com/icrichmond/UrbanButterflies).
+This supplementary information file contains (1) variable descriptions, (2) descriptive statistics for each study site, (3) summary tables of each model (4) figures for model relationships not shown in the text. All associated code can be found at the paper's associated GitHub repository, [here](https://github.com/icrichmond/UrbanButterflies).
 
 ------------------------------------------------------------------------
 
@@ -18,7 +43,11 @@ This supplementary information file contains (1) variable descriptions, (2) desc
 
 **Table S1.** Variable names, acronym (used in R code), and descriptions.
 
-```{r, echo = F, eval=T}
+```{r}
+#| echo: false
+#| eval: true
+#| label: variables
+
 var <- read.csv("input/variables.csv")
 
 knitr::kable(var)
@@ -29,8 +58,13 @@ knitr::kable(var)
 ## Descriptive Statistics
 
 **Table S2.** Descriptive statistics of butterfly abundance, species richness, and Shannon diversity, and plant species richness and % bloom for all flowering plants and native flowering plants. Variable acronyms/shortforms can be found in Table S1.
-```{r, echo = F, eval=T, warning=F, message=F}
-library(dplyr)
+
+```{r}
+#| echo: false
+#| eval: true
+#| warning: false
+#| message: false
+#| label: descriptive-stats
 
 plant <- read.csv("output/PlantCleanbySite.csv")
 plant <- plant %>% 
@@ -50,273 +84,85 @@ knitr::kable(df, digits = 2)
 
 ------------------------------------------------------------------------
 
-## Model Descriptions
+## Summary Tables
 
-Due to correlations between several of our explanatory variables, we opted to create three models that tested separate hypotheses: disturbance model, native plant model, and total plant model. Dependent variables include butterfly abundance, species richness, and Shannon diversity. Species richness and Shannon diversity were rarified using the `iNEXT` package to account for differences in sampling effort across sites.
+Table S3. 
+```{r}
+#| echo: false
+#| eval: true
+#| warning: false
+#| message: false
+#| label: urb-50
 
-The disturbance model includes a binary variable of disturbed/undisturbed, measured by Jesse in the field and is based on % mowed with sites that have over approximately 30% mowed marked as disturbed. We also created buffers around each site and calculated the % area that is urbanized in each buffer (urbanization defined as settlement and roads). Eight buffer distances were tested: 20 m, 50 m, 100 m, 200 m, 500 m, 1000 m, 2000 m, and 5000 m based on Rivest & Kharouba (2021, *Canadian Journal of Zoology*) and Kuussaari et al. (2021, *Urban Ecosystems*).
+urb_ab_50 <- readRDS('large/UrbAbund_50.rds')
+urb_n_sr_50 <- readRDS('large/UrbNicheSR_50.rds')
+urb_sh_50 <- readRDS('large/UrbShann_50.rds')
 
-The native plants model includes number of native species found at each site and average cover of native plant bloom in each quadrat at each site. The total plant model used the same measures but included all flowering plants observed at each site.
+tab_model(urb_ab_50, urb_n_sr_50, urb_sh_50, dv.labels = c("Abundance", "Species Richness", "Shannon Diversity"))
 
-Below represents the general code used for each model:
-
-```{r, echo = T, eval = F}
-# disturbance model
-dist <- lm(response ~ anthroper, data = df)
-# native species model 
-nat <- lm(response ~ nnative * avgnatbloom, data = df)
-# full species model 
-full <- lm(response ~ nspecies * avgbloom, data = df)
-# null 
-null <- lm(response ~ 1, data = x)
-```
-
-------------------------------------------------------------------------
-
-## Buffer Distances
-
-To test which buffer distance performed best, we took the top performing model for each response variable and did AICc model ranking at each buffer distance. This was only relevant if the top ranked model was the disturbance model, as that is the only model where the explanatory variables change based on buffer distance. Flower communities were only measured at the local scale, so the model is the same regardless of buffer distance. Species richness and Shannon diversity both had the disturbance model as their top ranked model for all top buffer distances. Species richness and Shannon diversity were best explained at similar scales, with all models equal and above 500 m being within 2 delta AICc values, indicating no significant difference. 
-
-**Table S3.** AICc table of buffer distances for abundance models. Since the top model is the local model of flower communities, there is no difference across buffer distances. Numbers in model name refer to the buffer distance (i.e., Modnames = AbDist50 = abundance disturbance model at 50 m buffer distance)
-
-```{r, echo = F, eval=T}
-a <- readRDS("large/AbundanceBufferAIC.rds")
-
-knitr::kable(a) 
-```
-
-**Table S4.** AICc table of buffer distances for species richness models. All models compared are disturbance models, as disturbance was the top ranking model for species richness. Numbers in model name refer to the buffer distance (i.e., Modnames = SRDist1000 = species richness disturbance model at 1000 m buffer distance)
-
-```{r, echo = F, eval=T}
-sr <- readRDS("large/SpeciesRichnessBufferAIC.rds")
-
-knitr::kable(sr) 
-```
-
-**Table S5.** AICc table of buffer distances for Shannon diversity models. All models compared are disturbance models, as disturbance was the top ranking model for Shannon diversity. Numbers in model name refer to the buffer distance (i.e., Modnames = ShDist1000 = Shannon diversity disturbance model at 1000 m buffer distance)
-
-```{r, echo = F, eval=T}
-sr <- readRDS("large/ShannonBufferAIC.rds")
-
-knitr::kable(sr) 
-```
-
-------------------------------------------------------------------------
-
-## Top Models
-
-To demonstrate the top model at each of the top buffer distances, here are the AICc tables at the best buffer distances for each response variables. We have AICc tables at each buffer distance but are only presenting them for top buffer distances here as to simplify the information being presented.
-
-### Abundance
-
-**Table S6a.** AICc table ranking abundance models at 50 m. For abundance, all buffer distances are the same, since the top ranking model is the local scale flowering model. 
-
-```{r, echo = F, eval=T}
-a <- readRDS("large/AbundanceAIC.rds")
-
-knitr::kable(a$AbDist50) 
 ```
 
 
-### Species Richness
+Table S4. 
+```{r}
+#| echo: false
+#| eval: true
+#| warning: false
+#| message: false
+#| label: urb-400
 
-**Table S7a.** AICc table ranking species richness models at 2000 m, one of four buffer distances found within 2 delta AICc.
+urb_ab_400 <- readRDS('large/UrbAbund_400.rds')
+urb_n_sr_400 <- readRDS('large/UrbNicheSR_400.rds')
+urb_sh_400 <- readRDS('large/UrbShann_400.rds')
 
-```{r, echo = F, eval=T}
-sr <- readRDS("large/SpeciesRichnessAIC.rds")
+tab_model(urb_ab_400, urb_n_sr_400, urb_sh_400, dv.labels = c("Abundance", "Species Richness", "Shannon Diversity"))
 
-knitr::kable(sr$SRDist2000) 
 ```
 
-**Table S7b.** AICc table ranking species richness models at 1000 m, one of four buffer distances found within 2 delta AICc.
+Table S5. 
+```{r}
+#| echo: false
+#| eval: true
+#| warning: false
+#| message: false
+#| label: total-plants
 
-```{r, echo = F, eval=T}
-sr <- readRDS("large/SpeciesRichnessAIC.rds")
+tot_ab <- readRDS('large/TotAbund.rds')
+tot_n_sr <- readRDS('large/TotNicheSR.rds')
+tot_sh <- readRDS('large/TotShann.rds')
 
-knitr::kable(sr$SRDist1000) 
+tab_model(tot_ab, tot_n_sr, tot_sh, dv.labels = c("Abundance", "Species Richness", "Shannon Diversity"))
+
 ```
 
-**Table S7c.** AICc table ranking species richness models at 5000 m, one of four buffer distances found within 2 delta AICc.
+Table S6. 
+```{r}
+#| echo: false
+#| eval: true
+#| warning: false
+#| message: false
+#| label: native-plants
 
-```{r, echo = F, eval=T}
-sr <- readRDS("large/SpeciesRichnessAIC.rds")
+nat_ab <- readRDS('large/NatAbund.rds')
+nat_n_sr <- readRDS('large/NatNicheSR.rds')
+nat_sh <- readRDS('large/NatShann.rds')
 
-knitr::kable(sr$SRDist5000) 
+tab_model(nat_ab, nat_n_sr, nat_sh, dv.labels = c("Abundance", "Species Richness", "Shannon Diversity"))
+
 ```
 
-
-**Table S7d.** AICc table ranking species richness models at 500 m, one of four buffer distances found within 2 delta AICc.
-
-```{r, echo = F, eval=T}
-sr <- readRDS("large/SpeciesRichnessAIC.rds")
-
-knitr::kable(sr$SRDist500) 
-```
-
-### Shannon Diversity
-
-**Table S8a.** AICc table ranking species richness models at 1000 m, one of four buffer distances found within 2 delta AICc.
-
-```{r, echo = F, eval=T}
-sh <- readRDS("large/ShannonAIC.rds")
-
-knitr::kable(sh$ShDist1000) 
-```
-
-**Table S8b.** AICc table ranking species richness models at 2000 m, one of four buffer distances found within 2 delta AICc.
-
-```{r, echo = F, eval=T}
-sh <- readRDS("large/ShannonAIC.rds")
-
-knitr::kable(sh$ShDist2000) 
-```
-
-**Table S8c.** AICc table ranking species richness models at 500 m, one of four buffer distances found within 2 delta AICc.
-
-```{r, echo = F, eval=T}
-sh <- readRDS("large/ShannonAIC.rds")
-
-knitr::kable(sh$ShDist500) 
-```
-
-**Table S8d.** AICc table ranking species richness models at 5000 m, one of four buffer distances found within 2 delta AICc.
-
-```{r, echo = F, eval=T}
-sh <- readRDS("large/ShannonAIC.rds")
-
-knitr::kable(sh$ShDist5000) 
-```
-
-------------------------------------------------------------------------
-
-## Top Model Summaries
-
-We investigate the top models at each buffer distance to see which variables are driving these relationships. An important consideration is that our models are explaining a high amount of variation, even when there are not statistically significant relationships. One factor that may be driving this is that we do not actually see very much variation in our dataset which is an important consideration for our results.
-
-### Abundance
-
-**Table S9a.** Summary table for all plants model at 50 m buffer distance. We present 50 m distance because the top model is a local effect (flower diversity and average % bloom) measured at the pond, so buffer distance is not relevant for abundance.
-
-```{r, echo = F, eval=T}
-library(magrittr)
-ab <- readRDS("large/AbundanceTopModel1.rds")
-names(ab$coefficients) <- c('Intercept', 'Number of Flowering Species', "Avg. % Bloom", "Interaction")
-ab %>% broom::tidy() %>% knitr::kable()
-```
-
-
-**Table S9b.** Summary table for native plants model at 50 m buffer distance. We present 50 m distance because the top model is a local effect (native flower diversity and average % native bloom) measured at the pond, so buffer distance is not relevant for abundance.
-
-```{r, echo = F, eval=T}
-library(magrittr)
-ab <- readRDS("large/AbundanceTopModel2.rds")
-names(ab$coefficients) <- c('Intercept', 'Number of Native Flowering Species', "Avg. % Native Bloom", "Interaction")
-ab %>% broom::tidy() %>% knitr::kable()
-```
-
-
-### Species Richness
-
-**Table S10a.** Summary table for species richness disturbance model at 2000 m buffer distance.
-
-```{r, echo = F, eval=T}
-library(magrittr)
-sr <- readRDS("large/SpeciesRichnessDistModels.rds")
-sr <- sr$SRDist2000 
-names(sr$coefficients) <- c('Intercept', 'Urbanization (%)')
-sr %>% broom::tidy() %>% knitr::kable()
-```
-
-**Table S10b.** Summary table for species richness disturbance model at 1000 m buffer distance.
-
-```{r, echo = F, eval=T}
-library(magrittr)
-sr <- readRDS("large/SpeciesRichnessDistModels.rds")
-sr <- sr$SRDist1000 
-names(sr$coefficients) <- c('Intercept', 'Urbanization (%)')
-sr %>% broom::tidy() %>% knitr::kable()
-```
-
-**Table S10c.** Summary table for species richness disturbance model at 5000 m buffer distance.
-
-```{r, echo = F, eval=T}
-library(magrittr)
-sr <- readRDS("large/SpeciesRichnessDistModels.rds")
-sr <- sr$SRDist5000 
-names(sr$coefficients) <- c('Intercept', 'Urbanization (%)')
-sr %>% broom::tidy() %>% knitr::kable()
-```
-
-**Table S10d.** Summary table for species richness disturbance model at 500 m buffer distance.
-
-```{r, echo = F, eval=T}
-library(magrittr)
-sr <- readRDS("large/SpeciesRichnessDistModels.rds")
-sr <- sr$SRDist500 
-names(sr$coefficients) <- c('Intercept', 'Urbanization (%)')
-sr %>% broom::tidy() %>% knitr::kable()
-```
-
-
-### Shannon Diversity
-
-**Table S11a.** Summary table for Shannon diversity disturbance model at 1000 m buffer distance.
-
-```{r, echo = F, eval=T}
-library(magrittr)
-sh <- readRDS("large/ShannonDistModels.rds")
-sh <- sh$ShDist1000 
-names(sh$coefficients) <- c('Intercept', 'Urbanization (%)')
-sh %>% broom::tidy() %>% knitr::kable()
-```
-
-**Table S11b.** Summary table for Shannon diversity disturbance model at 2000 m buffer distance.
-
-```{r, echo = F, eval=T}
-library(magrittr)
-sh <- readRDS("large/ShannonDistModels.rds")
-sh <- sh$ShDist2000 
-names(sh$coefficients) <- c('Intercept', 'Urbanization (%)')
-sh %>% broom::tidy() %>% knitr::kable()
-```
-
-**Table S11c.** Summary table for Shannon diversity disturbance model at 500 m buffer distance.
-
-```{r, echo = F, eval=T}
-library(magrittr)
-sh <- readRDS("large/ShannonDistModels.rds")
-sh <- sh$ShDist500 
-names(sh$coefficients) <- c('Intercept', 'Urbanization (%)')
-sh %>% broom::tidy() %>% knitr::kable()
-```
-
-**Table S11b.** Summary table for Shannon diversity disturbance model at 5000 m buffer distance.
-
-```{r, echo = F, eval=T}
-library(magrittr)
-sh <- readRDS("large/ShannonDistModels.rds")
-sh <- sh$ShDist5000 
-names(sh$coefficients) <- c('Intercept', 'Urbanization (%)')
-sh %>% broom::tidy() %>% knitr::kable()
-```
 
 ------------------------------------------------------------------------
 
 ## Figures
 
-```{r, echo = F, eval=T, warning=FALSE, message=FALSE}
-#### PACKAGES #### 
-library(ggplot2)
-library(marginaleffects)
-library(patchwork)
+```{r}
+#| echo: false
+#| eval: true
+#| warning: false
+#| message: false
+#| label: figure-s1
 
-#### DATA #### 
-# raw data
-sitefull <- readRDS("large/SiteFull.rds")
-
-# abundance model 
-ab_dat <- sitefull$full20
-ab_nat <- readRDS("large/AbundanceTopModel2.rds")
 
 ab_nat1 <- #plot_predictions(ab_sp, condition = "nspecies") + 
   ggplot()+ 
