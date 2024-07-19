@@ -12,7 +12,7 @@ Abundance - avgbloom sig
 Abundance - niche sig 
 Abundance - nspecies x avgbloom sig 
 Abundance - avgbloom x wetland specialist sig 
-SR - niche sig 
+
 
 Native Species 
 Abundance - nnative sig
@@ -20,4 +20,3 @@ Abundance - niche sig
 Abundance - nnative x avgnatbloom sig 
 Abundance - avgnatbloom x wetland associated sig 
 SR - nnative sig 
-SR - niche sig 
