@@ -1,14 +1,23 @@
-now have three hypotheses: 
+Anthro @ 400 m 
+abundance - anthro sig (pos)
+Abundance - niche sig 
+anthro * niche - sig 
+SR - neg anthro sig 
+SR - anthro * niche sig 
+Shannon - anthro sig 
 
-urbanization affects abundance/sh/sr
+Total Species 
+Abundance - nspecies sig
+Abundance - avgbloom sig
+Abundance - niche sig 
+Abundance - nspecies x avgbloom sig 
+Abundance - avgbloom x wetland specialist sig 
+SR - niche sig 
 
-total plant presence affects abundance/sh/sr
-
-native plant presence affects abundance/sh/sr
-
-
-abundance is mixed models w niche breadth (no p-values yet) 
-
-shannon diversity and species richness have significant relationships w urbanization 
-
-no sig relationships between shan div and sr wrt plants (possible that we did not observe enough variation in availability -> management implication) 
+Native Species 
+Abundance - nnative sig
+Abundance - niche sig 
+Abundance - nnative x avgnatbloom sig 
+Abundance - avgnatbloom x wetland associated sig 
+SR - nnative sig 
+SR - niche sig 
