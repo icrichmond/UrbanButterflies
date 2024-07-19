@@ -12,6 +12,7 @@ format:
 #| eval: true
 #| message: false
 #| warning: false
+#| include: false
 #| label: setup
 
 
@@ -35,7 +36,7 @@ abp <- inner_join(ab, plant, by = "Pond")
 (\*) University of Ottawa, Department of Earth and Environmental Sciences, 150, Louis-Pasteur Private, Ottawa, Ontario, Canada, K1N 6N5\
 email: [jfort073\@uottawa.ca](mailto:jfort073@uottawa.ca){.email}
 
-This supplementary information file contains (1) variable descriptions, (2) descriptive statistics for each study site, (3) summary tables of each model (4) figures for model relationships not shown in the text. All associated code can be found at the paper's associated GitHub repository, [here](https://github.com/icrichmond/UrbanButterflies).
+This supplementary information file contains (1) variable descriptions, (2) descriptive statistics for each study site, (3) summary tables of each model. All associated code can be found at the paper's associated GitHub repository, [here](https://github.com/icrichmond/UrbanButterflies).
 
 ------------------------------------------------------------------------
 
@@ -86,24 +87,7 @@ knitr::kable(df, digits = 2)
 
 ## Summary Tables
 
-Table S3. 
-```{r}
-#| echo: false
-#| eval: true
-#| warning: false
-#| message: false
-#| label: urb-50
-
-urb_ab_50 <- readRDS('large/UrbAbund_50.rds')
-urb_n_sr_50 <- readRDS('large/UrbNicheSR_50.rds')
-urb_sh_50 <- readRDS('large/UrbShann_50.rds')
-
-tab_model(urb_ab_50, urb_n_sr_50, urb_sh_50, dv.labels = c("Abundance", "Species Richness", "Shannon Diversity"))
-
-```
-
-
-Table S4. 
+Table S3.  
 ```{r}
 #| echo: false
 #| eval: true
@@ -119,7 +103,7 @@ tab_model(urb_ab_400, urb_n_sr_400, urb_sh_400, dv.labels = c("Abundance", "Spec
 
 ```
 
-Table S5. 
+Table S4. 
 ```{r}
 #| echo: false
 #| eval: true
@@ -135,7 +119,7 @@ tab_model(tot_ab, tot_n_sr, tot_sh, dv.labels = c("Abundance", "Species Richness
 
 ```
 
-Table S6. 
+Table S5. 
 ```{r}
 #| echo: false
 #| eval: true
@@ -151,48 +135,3 @@ tab_model(nat_ab, nat_n_sr, nat_sh, dv.labels = c("Abundance", "Species Richness
 
 ```
 
-
-------------------------------------------------------------------------
-
-## Figures
-
-```{r}
-#| echo: false
-#| eval: true
-#| warning: false
-#| message: false
-#| label: figure-s1
-
-
-ab_nat1 <- #plot_predictions(ab_sp, condition = "nspecies") + 
-  ggplot()+ 
-  geom_point(aes(x = nspecies, y = abund), data = ab_dat) + 
-  annotate("text", x = 27, y = 125, label = bquote("Estimate = " ~ .(round(summary(ab_nat)$coefficients[2,1], 2)) ~ "+/-" ~ .(round(summary(ab_nat)$coefficients[2,2], 2)))) + 
-  annotate("text", x = 29, y = 115, label = bquote("p-value = " ~ .(round(summary(ab_nat)$coefficients[2,4], 2)))) + 
-  labs(x = "Number of Native Flowering Species", y = "Abundance") + 
-  theme_classic() + 
-  theme(axis.text = element_text(size = 10))
-
-ab_nat2 <- #plot_predictions(ab_sp, condition = "avgbloom") +
-  ggplot() + 
-  geom_point(aes(x = avgbloom, y = abund), data = ab_dat) + 
-  annotate("text", x = 17, y = 125, label = bquote("Estimate = " ~ .(round(summary(ab_nat)$coefficients[3,1], 2)) ~ "+/-" ~ .(round(summary(ab_nat)$coefficients[3,2], 2)))) + 
-  annotate("text", x = 18, y = 115, label = bquote("p-value = " ~ .(round(summary(ab_nat)$coefficients[3,4], 2)))) + 
-  labs(x = "Average % Native Blooming Cover", y = "Abundance") + 
-  theme_classic() +
-  theme(axis.text = element_text(size = 10))
-
-ab_nat3 <- plot_slopes(ab_nat, variables = "nnative", condition = "avgnatbloom") +
-  labs(x = "Average % Native Blooming Cover", y = "Slope of Abundance wrt \nNumber of Native Flowering Species") + 
-  annotate("text", x = 10.5, y = 13.5, label = bquote("Estimate = " ~ .(round(summary(ab_nat)$coefficients[4,1], 2)) ~ "+/-" ~ .(round(summary(ab_nat)$coefficients[4,2], 2)))) + 
-  annotate("text", x = 11, y = 11, label = bquote("p-value = " ~ .(round(summary(ab_nat)$coefficients[4,4], 2)))) + 
-  theme_classic() + 
-  theme(axis.text = element_text(size = 10))
-
-p1 <- (ab_nat1 + ab_nat2)/ab_nat3
-
-p1
-
-```
-
-**Figure S1.** Relationships between butterfly abundance and explanatory variables in one of the top-ranked models, native flowers (Table S9 for model summary). The total flowers model was within 2 ΔAICc (Figure 3 in the text to see visualized relationships for that model and Table S9 for model summary). Top left: Predicted relationship between number of native flowering species and butterfly abundance, not statistically significant. Top right: Predicted relationship between average % native blooming cover and butterfly abundance, not statistically significant. Bottom: Marginal effect between average % native blooming cover and butterfly abundance with respect to number of native flowering species.  The line indicates how the slope of the relationship between butterfly abundance and number of native flowering species changes at different levels of average % native blooming cover, allowing us to visualize the continuous interaction effect. All plots were made using ggplot2 and marginaleffects (Arel-Bundock et al. 2024, Wickham et al. 2024).
