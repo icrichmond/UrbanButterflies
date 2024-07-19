@@ -16,57 +16,72 @@ abp <- inner_join(ab, plant, by = "Pond")
 
 
 # Models ------------------------------------------------------------------
-urb_ab <- readRDS('large/UrbAbund.rds')
-urb_sh <- readRDS('large/UrbShann.rds')
-urb_sr <- readRDS('large/UrbSR.rds')
+urb_ab_400 <- readRDS('large/UrbAbund_400.rds')
+urb_n_sr_400 <- readRDS('large/UrbNicheSR_400.rds')
+urb_sh_400 <- readRDS('large/UrbShann_400.rds')
 tot_ab <- readRDS('large/TotAbund.rds')
+tot_n_sr <- readRDS('large/TotNicheSR.rds')
 tot_sh <- readRDS('large/TotShann.rds')
-tot_sr <- readRDS('large/TotSR.rds')
 nat_ab <- readRDS('large/NatAbund.rds')
+nat_n_sr <- readRDS('large/NatNicheSR.rds')
 nat_sh <- readRDS('large/NatShann.rds')
-nat_sr <- readRDS('large/NatSR.rds')
 
 
 
 # Plots -------------------------------------------------------------------
 
-basic_plot <- function(mod, condition, x, y, dat, xlab, ylab, ex, ey, px, py){
+basic_plot <- function(mod, condition, colour = NULL, x, y, dat, xlab, ylab){
+
   
   plot_predictions(mod, condition = condition) + 
-    geom_point(aes(x = {{x}}, y = {{y}}), data = dat) + 
-    annotate("text", x = ex, y = ey, label = bquote("Estimate = " ~ .(round(summary(mod)$coefficients[2,1], 2)) ~ "+/-" ~ .(round(summary(mod)$coefficients[2,2], 2)))) + 
-    annotate("text", x = px, y = py, label = bquote("p-value = " ~ .(round(summary(mod)$coefficients[2,4], 2)) ~ ", R2 = " ~ .(round(summary(mod)$adj.r.squared, 2)))) + 
-    labs(x = xlab, y = ylab) + 
+    geom_point(aes(x = {{x}}, y = {{y}}, colour = {{colour}}), data = dat) + 
+    labs(x = xlab, y = ylab, colour = "", fill = "") + 
     theme_classic() + 
-    theme(axis.text = element_text(size = 10))
+    theme(axis.text = element_text(size = 10),
+          legend.position = "top")
   
 }
 
-
-interaction_plot <- function(mod, var, condition, xlab, ylab, ex, ey, px, py){
+int_plot <- function(mod, variables, condition, xlab, ylab){
   
-  plot_slopes(mod, variables = var, condition = condition) +
-    labs(x = xlab, y = ylab) + 
-    annotate("text", x = ex, y = ey, label = bquote("Estimate = " ~ .(round(summary(mod)$coefficients[4,1], 2)) ~ "+/-" ~ .(round(summary(mod)$coefficients[4,2], 2)))) + 
-    annotate("text", x = px, y = py, label = bquote("p-value = " ~ .(round(summary(mod)$coefficients[4,4], 2)))) + 
+  plot_comparisons(mod, variables = variables, 
+                   condition = condition, type = "response") + 
     theme_classic() + 
-    theme(axis.text = element_text(size = 10))
+    labs(x = xlab, y = ylab) + 
+    theme(axis.text = element_text(size = 10, colour = "black"))
+  
   
 }
 
-varying_slopes <- function(){
-  
-  
-}
 
 # Urbanization ------------------------------------------------------------
 
 # Abundance 
-plot_slopes(urb_ab, variables = "Niche.Breadth", condition = "anthroper") 
-  geom_point(aes(x = anthroper, y = Abundance, colour = Niche.Breadth), data = anp) + 
-  theme_classic()
+
+ab_ni <- basic_plot(urb_ab_400, condition = "anthroper_400", 
+           dat = anp, x = anthroper_400, y = Abundance,
+           xlab = "Anthropogenic Land Cover (%)", ylab = "Butterfly Abundance") + 
+  annotate("text", x = 0.8, y = 95, label = bquote("IRR = " ~ .(round(exp(summary(urb_ab_400)$coefficients[2,1]), 2)) ~ "+/-" ~ .(round(exp(summary(urb_ab_400)$coefficients[2,2]), 2)))) + 
+  annotate("text", x = 0.8, y = 90, label = bquote("p-value = " ~ .(round(summary(urb_ab_400)$coefficients[2,4], 4)))) +
+  annotate("text", x = 0.8, y = 85, label = bquote(R^2 ~ " = "  ~ .(round((with(summary(urb_ab_400), 1 - deviance/null.deviance)), 2)))) 
+
+  
+
+ab_ni <- basic_plot(urb_ab_400, condition = c("anthroper_400", "Niche.Breadth"), dat = anp, 
+           x = anthroper_400, y = Abundance, colour = Niche.Breadth,
+           xlab = "Anthropogenic Land Cover (%)", ylab = "Butterfly Abundance") + 
+  annotate("text", x = 0.8, y = 95, label = bquote("IRR (WA) = " ~ .(round(exp(summary(urb_ab_400)$coefficients[3,1]), 2)) ~ "+/-" ~ .(round(exp(summary(urb_ab_400)$coefficients[3,2]), 2)))) + 
+  annotate("text", x = 0.8, y = 90, label = bquote("p-value = " ~ .(round(summary(urb_ab_400)$coefficients[3,4], 14)))) +
+  annotate("text", x = 0.8, y = 85, label = bquote(R^2 ~ " = "  ~ .(round((with(summary(urb_ab_400), 1 - deviance/null.deviance)), 2)))) 
+
+
+an_int <- int_plot(urb_ab_400, list("anthroper_400" = 0.5), condition = c("Niche.Breadth"), 
+                   xlab = "", ylab = "Change in butterfly abundance with 50% increase \nin anthropogenic land cover")
+
 
 # Shannon 
+
+
 
 
 # Species Richness 
