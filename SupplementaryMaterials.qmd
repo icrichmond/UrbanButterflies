@@ -32,7 +32,6 @@ abp <- inner_join(ab, plant, by = "Pond")
 
 ```
 
-
 (\*) University of Ottawa, Department of Earth and Environmental Sciences, 150, Louis-Pasteur Private, Ottawa, Ontario, Canada, K1N 6N5\
 email: [jfort073\@uottawa.ca](mailto:jfort073@uottawa.ca){.email}
 
@@ -82,12 +81,12 @@ df <- cbind(butt, plant)
 knitr::kable(df, digits = 2)
 ```
 
-
 ------------------------------------------------------------------------
 
 ## Summary Tables
 
-Table S3.  
+Table S3. Model summary tables for models concerning anthropogenic land use. The first tab contains the results of the model with butterfly abundance as a response, the second tab with butterfly species richness, and the third tab Shannon diversity. Incidence rate ratios are reported, where decimal numbers indicate negative relationships and numbers 1 and above indicate positive relationships. 'anthroper_400' represents the percentage of anthropogenic land use surrounding the pond within a 400 m buffer. Niche breadth categories are presented in comparison to the intercept, which is the 'non-wetland' niche for this table. 'x' in the table indicates an interaction effect. CI columns are 95% confidence intervals.
+
 ```{r}
 #| echo: false
 #| eval: true
@@ -99,11 +98,13 @@ urb_ab_400 <- readRDS('large/UrbAbund_400.rds')
 urb_n_sr_400 <- readRDS('large/UrbNicheSR_400.rds')
 urb_sh_400 <- readRDS('large/UrbShann_400.rds')
 
-tab_model(urb_ab_400, urb_n_sr_400, urb_sh_400, dv.labels = c("Abundance", "Species Richness", "Shannon Diversity"))
+tab_model(urb_ab_400, urb_n_sr_400, urb_sh_400, dv.labels = c("Abundance", "Species Richness", "Shannon Diversity"),
+          show.r2 = F)
 
 ```
 
-Table S4. 
+Table S4. Model summary tables for models concerning anthropogenic land use. The first tab contains the results of the model with butterfly abundance as a response, the second tab with butterfly species richness, and the third tab Shannon diversity. Incidence rate ratios are reported, where decimal numbers indicate negative relationships and numbers 1 and above indicate positive relationships. 'nspecies' represents the number of flowering species present. 'avgbloom' represents the average percent cover of flowering species at each pond. Niche breadth categories are presented in comparison to the intercept, which is the 'non-wetland' niche for this table. 'x' in the table indicates an interaction effect. CI columns are 95% confidence intervals.
+
 ```{r}
 #| echo: false
 #| eval: true
@@ -115,11 +116,13 @@ tot_ab <- readRDS('large/TotAbund.rds')
 tot_n_sr <- readRDS('large/TotNicheSR.rds')
 tot_sh <- readRDS('large/TotShann.rds')
 
-tab_model(tot_ab, tot_n_sr, tot_sh, dv.labels = c("Abundance", "Species Richness", "Shannon Diversity"))
+tab_model(tot_ab, tot_n_sr, tot_sh, dv.labels = c("Abundance", "Species Richness", "Shannon Diversity"),
+          show.r2 = F)
 
 ```
 
-Table S5. 
+Table S5. Model summary tables for models concerning anthropogenic land use. The first tab contains the results of the model with butterfly abundance as a response, the second tab with butterfly species richness, and the third tab Shannon diversity. Incidence rate ratios are reported, where decimal numbers indicate negative relationships and numbers 1 and above indicate positive relationships. 'nnative' represents the number of native flowering species present. 'avgnatbloom' represents the average percent cover of native flowering species at each pond. Niche breadth categories are presented in comparison to the intercept, which is the 'non-wetland' niche for this table. 'x' in the table indicates an interaction effect. CI columns are 95% confidence intervals.
+
 ```{r}
 #| echo: false
 #| eval: true
@@ -131,7 +134,7 @@ nat_ab <- readRDS('large/NatAbund.rds')
 nat_n_sr <- readRDS('large/NatNicheSR.rds')
 nat_sh <- readRDS('large/NatShann.rds')
 
-tab_model(nat_ab, nat_n_sr, nat_sh, dv.labels = c("Abundance", "Species Richness", "Shannon Diversity"))
+tab_model(nat_ab, nat_n_sr, nat_sh, dv.labels = c("Abundance", "Species Richness", "Shannon Diversity"),
+          show.r2 = F)
 
 ```
-
