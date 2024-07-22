@@ -13,9 +13,9 @@ pb <- inner_join(plant, butt, by = join_by("Pond" == "SWP"))
 
 # Model -------------------------------------------------------------------
 
-mod_ab <- glm(Abundance ~ 1 + nspecies * avgbloom + nspecies * Niche.Breadth + avgbloom*Niche.Breadth, family = poisson(), data = pn)
-mod_n_sr <- glm(Species.Richness ~ 1 +  nspecies * avgbloom + nspecies * Niche.Breadth + avgbloom*Niche.Breadth, family = poisson(), data = pn)
-mod_sh <- lm(Shannon ~ nspecies * avgbloom, data = pb)
+mod_ab <- glm(Abundance ~ 1 + nspecies + avgbloom + nspecies * Niche.Breadth + avgbloom*Niche.Breadth, family = poisson(), data = pn)
+mod_n_sr <- glm(Species.Richness ~ 1 +  nspecies + avgbloom + nspecies * Niche.Breadth + avgbloom*Niche.Breadth, family = poisson(), data = pn)
+mod_sh <- lm(Shannon ~ nspecies + avgbloom, data = pb)
 
 # Diagnostics -------------------------------------------------------------
 
