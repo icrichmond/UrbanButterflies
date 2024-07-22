@@ -19,39 +19,6 @@ abp <- inner_join(ab, plant, by = "Pond")
 urb_ab_400 <- readRDS('large/UrbAbund_400.rds')
 urb_n_sr_400 <- readRDS('large/UrbNicheSR_400.rds')
 urb_sh_400 <- readRDS('large/UrbShann_400.rds')
-tot_ab <- readRDS('large/TotAbund.rds')
-tot_n_sr <- readRDS('large/TotNicheSR.rds')
-tot_sh <- readRDS('large/TotShann.rds')
-nat_ab <- readRDS('large/NatAbund.rds')
-nat_n_sr <- readRDS('large/NatNicheSR.rds')
-nat_sh <- readRDS('large/NatShann.rds')
-
-
-
-# Plots -------------------------------------------------------------------
-
-basic_plot <- function(mod, condition, colour = NULL, x, y, dat, xlab, ylab){
-
-  
-  plot_predictions(mod, condition = condition) + 
-    geom_point(aes(x = {{x}}, y = {{y}}, colour = {{colour}}), data = dat) + 
-    labs(x = xlab, y = ylab, colour = "", fill = "") + 
-    theme_classic() + 
-    theme(axis.text = element_text(size = 10),
-          legend.position = "top")
-  
-}
-
-int_plot <- function(mod, variables, condition, xlab, ylab){
-  
-  plot_comparisons(mod, variables = variables, 
-                   condition = condition, type = "response") + 
-    theme_classic() + 
-    labs(x = xlab, y = ylab) + 
-    theme(axis.text = element_text(size = 10, colour = "black"))
-  
-  
-}
 
 
 # Urbanization ------------------------------------------------------------
@@ -78,6 +45,12 @@ ab_ni <- basic_plot(urb_ab_400, condition = c("anthroper_400", "Niche.Breadth"),
 an_int <- int_plot(urb_ab_400, list("anthroper_400" = 0.5), condition = c("Niche.Breadth"), 
                    xlab = "", ylab = "Change in butterfly abundance with 50% increase \nin anthropogenic land cover")
 
+
+ab_urb <- (ab_an + ab_ni) / an_int + 
+  plot_layout(guides = 'collect') & 
+  theme(legend.position = 'top')
+
+
 # Species Richness 
 
 sr_an <- basic_plot(urb_n_sr_400, condition = "anthroper_400", 
@@ -100,16 +73,6 @@ sh_an <- basic_plot(urb_sh_400, condition = "anthroper_400",
   annotate("text", x = 0.75, y = 7.5, label = bquote(R^2 ~ " = "  ~ .(round(summary(urb_sh_400)$adj.r.squared , 2)))) 
 
 
-
-# Total Bloom -------------------------------------------------------------
-
-# Abundance 
+sr_urb <- (sr_an + sr_int) / sh_an
 
 
-
-
-# Native Bloom ------------------------------------------------------------
-
-# Abundance 
-
-# Species Richness
