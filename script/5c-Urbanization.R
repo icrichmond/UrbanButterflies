@@ -48,9 +48,9 @@ sr_an <- basic_plot(urb_n_sr_400, condition = "anthroper_400",
 sh_an <- basic_plot(urb_sh_400, condition = "anthroper_400", 
                     dat = abp, x = anthroper_400, y = Shannon,
                     xlab = "Anthropogenic Land Cover (%)", ylab = "Butterfly Shannon Diversity") + 
-  annotate("text", x = 0.75, y = 8.5, label = bquote("IRR = " ~ .(round(summary(urb_sh_400)$coefficients[2,1], 2)) ~ "+/-" ~ .(round(summary(urb_sh_400)$coefficients[2,2], 2)))) + 
-  annotate("text", x = 0.75, y = 8.25, label = bquote("p-value = " ~ .(round(summary(urb_sh_400)$coefficients[2,4], 3)))) +
-  annotate("text", x = 0.75, y = 8, label = bquote(R^2 ~ " = "  ~ .(round(summary(urb_sh_400)$adj.r.squared , 2)))) 
+  annotate("text", x = 0.65, y = 8.5, label = bquote("Estimate = " ~ .(round(summary(urb_sh_400)$coefficients[2,1], 2)) ~ "+/-" ~ .(round(summary(urb_sh_400)$coefficients[2,2], 2)))) + 
+  annotate("text", x = 0.65, y = 8.25, label = bquote("p-value = " ~ .(round(summary(urb_sh_400)$coefficients[2,4], 3)))) +
+  annotate("text", x = 0.65, y = 8, label = bquote(R^2 ~ " = "  ~ .(round(summary(urb_sh_400)$adj.r.squared , 2)))) 
 
 
 urb <- ab_an + sr_an + sh_an + 
