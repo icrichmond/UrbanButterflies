@@ -35,7 +35,7 @@ abp <- inner_join(ab, plant, by = "Pond")
 (\*) University of Ottawa, Department of Earth and Environmental Sciences, 150, Louis-Pasteur Private, Ottawa, Ontario, Canada, K1N 6N5\
 email: [jfort073\@uottawa.ca](mailto:jfort073@uottawa.ca){.email}
 
-This supplementary information file contains (1) variable descriptions, (2) descriptive statistics for each study site, (3) summary tables of each model. All associated code can be found at the paper's associated GitHub repository, [here](https://github.com/icrichmond/UrbanButterflies).
+This supplementary information file contains (1) variable descriptions, (2) descriptive statistics for each study site, (3) summary tables of each model, (4) an abundance histogram of all species found. All associated code can be found at the paper's associated GitHub repository, [here](https://github.com/icrichmond/UrbanButterflies).
 
 ------------------------------------------------------------------------
 
@@ -138,3 +138,11 @@ tab_model(nat_ab, nat_n_sr, nat_sh, dv.labels = c("Abundance", "Species Richness
           show.r2 = F)
 
 ```
+
+------------------------------------------------------------------------
+
+## Species Abundance
+
+![](figures/AbundanceHistogram.png)
+
+Figure S1. Raw abundance counts for each species identified and counted for this study. If a species level identification was not possible, we used genus level. If a genus level identification was not possible, we used family.
