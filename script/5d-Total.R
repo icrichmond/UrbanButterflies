@@ -48,7 +48,7 @@ ab_tot_n <- basic_plot(tot_ab, condition = c("nspecies"), dat = anp,
 shan_tot <- basic_plot(tot_sh, condition = "nspecies", 
                        dat = abp, x = nspecies, y = Shannon,
                        xlab = "Number of Flowering Plant Species", ylab = "Butterfly Shannon Diversity") + 
-  annotate("text", x = 31, y = 8.5, label = bquote("IRR = " ~ .(round(summary(tot_sh)$coefficients[2,1], 2)) ~ "+/-" ~ .(round(summary(tot_sh)$coefficients[2,2], 2)))) + 
+  annotate("text", x = 31, y = 8.5, label = bquote("Estimate = " ~ .(round(summary(tot_sh)$coefficients[2,1], 2)) ~ "+/-" ~ .(round(summary(tot_sh)$coefficients[2,2], 2)))) + 
   annotate("text", x = 31, y = 8.2, label = bquote("p-value = " ~ .(round(summary(tot_sh)$coefficients[2,4], 2)))) +
   annotate("text", x = 31, y = 7.9, label = bquote(R^2 ~ " = "  ~ .(round(summary(tot_sh)$adj.r.squared , 2)))) 
 
