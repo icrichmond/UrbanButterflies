@@ -22,7 +22,7 @@ plant <- read.csv('output/PlantCleanbySite.csv') %>%
   mutate(Pond = str_remove(Pond, "SWF-"),
          Pond = as.numeric(Pond))
 anthro <- st_read("output/AnthroFull.gpkg")
-niche <- read.csv('input/ButterflyNicheBreadth.csv')
+niche <- read.csv('output/ButterflyNiche.csv')
 butt <- read.csv('output/ButterflyCleanbySite.csv')
 
 an <- left_join(niche, anthro, by = "Pond")
@@ -103,7 +103,7 @@ tab_model(urb_ab_400, urb_n_sr_400, urb_sh_400, dv.labels = c("Abundance", "Spec
 
 ```
 
-Table S4. Model summary tables for models concerning anthropogenic land use. The first tab contains the results of the model with butterfly abundance as a response, the second tab with butterfly species richness, and the third tab Shannon diversity. Incidence rate ratios are reported, where decimal numbers indicate negative relationships and numbers 1 and above indicate positive relationships. 'nspecies' represents the number of flowering species present. 'avgbloom' represents the average percent cover of flowering species at each pond. Niche breadth categories are presented in comparison to the intercept, which is the 'non-wetland' niche for this table. 'x' in the table indicates an interaction effect. CI columns are 95% confidence intervals.
+Table S4. Model summary tables for models concerning total plant bloom. The first tab contains the results of the model with butterfly abundance as a response, the second tab with butterfly species richness, and the third tab Shannon diversity. Incidence rate ratios are reported, where decimal numbers indicate negative relationships and numbers 1 and above indicate positive relationships. 'nspecies' represents the number of flowering species present. 'avgbloom' represents the average percent cover of flowering species at each pond. Niche breadth categories are presented in comparison to the intercept, which is the 'non-wetland' niche for this table. 'x' in the table indicates an interaction effect. CI columns are 95% confidence intervals.
 
 ```{r}
 #| echo: false
@@ -121,7 +121,7 @@ tab_model(tot_ab, tot_n_sr, tot_sh, dv.labels = c("Abundance", "Species Richness
 
 ```
 
-Table S5. Model summary tables for models concerning anthropogenic land use. The first tab contains the results of the model with butterfly abundance as a response, the second tab with butterfly species richness, and the third tab Shannon diversity. Incidence rate ratios are reported, where decimal numbers indicate negative relationships and numbers 1 and above indicate positive relationships. 'nnative' represents the number of native flowering species present. 'avgnatbloom' represents the average percent cover of native flowering species at each pond. Niche breadth categories are presented in comparison to the intercept, which is the 'non-wetland' niche for this table. 'x' in the table indicates an interaction effect. CI columns are 95% confidence intervals.
+Table S5. Model summary tables for models concerning native plant bloom. The first tab contains the results of the model with butterfly abundance as a response, the second tab with butterfly species richness, and the third tab Shannon diversity. Incidence rate ratios are reported, where decimal numbers indicate negative relationships and numbers 1 and above indicate positive relationships. 'nnative' represents the number of native flowering species present. 'avgnatbloom' represents the average percent cover of native flowering species at each pond. Niche breadth categories are presented in comparison to the intercept, which is the 'non-wetland' niche for this table. 'x' in the table indicates an interaction effect. CI columns are 95% confidence intervals.
 
 ```{r}
 #| echo: false

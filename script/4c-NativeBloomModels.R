@@ -5,7 +5,7 @@ source('script/0-Packages.R')
 plant <- read.csv('output/PlantCleanbySite.csv') %>% 
   mutate(Pond = str_remove(Pond, "SWF-"),
          Pond = as.numeric(Pond))
-niche <- read.csv('input/ButterflyNicheBreadth.csv')
+niche <- read.csv('output/ButterflyNiche.csv')
 butt <- read.csv('output/ButterflyCleanbySite.csv')
 
 pn <- left_join(niche, plant, by = "Pond")

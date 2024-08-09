@@ -3,6 +3,7 @@ source('script/0-Packages.R')
 # Data --------------------------------------------------------------------
 
 buttraw <- read_csv("input/ButterflyRawData.csv")
+buttniche <- read.csv("input/ButterflyNicheBreadth.csv")
 
 
 # Species Names -----------------------------------------------------------
@@ -96,7 +97,20 @@ buttab_site$SWP <- as.character(buttab_site$SWP)
 butt_site <- inner_join(buttab_site, rarediv_w)
 
 
+
+# Collapse Niches ---------------------------------------------------------
+
+buttniche$Niche.Breadth <- as.factor(buttniche$Niche.Breadth)
+buttniche$Niche.Breadth <- fct_collapse(buttniche$Niche.Breadth,
+                                        `Wetland non-specialist` = c("Non-wetland", "Wetland associated"),
+                                        `Wetland specialist` = c("Wetland specialist"))
+buttniche <- buttniche %>% 
+  group_by(Pond, Niche.Breadth) %>% 
+  summarize(Abundance = sum(Abundance), 
+            Species.Richness = sum(Species.Richness))
+
 # Save --------------------------------------------------------------------
 
 write_csv(buttsp, "output/ButterflySpecies.csv")
 write_csv(butt_site, "output/ButterflyCleanbySite.csv")
+write_csv(buttniche, 'output/ButterflyNiche.csv')

@@ -3,7 +3,7 @@ source('script/0-Packages.R')
 # Data --------------------------------------------------------------------
 
 anthro <- st_read("output/AnthroFull.gpkg")
-niche <- read.csv('input/ButterflyNicheBreadth.csv')
+niche <- read.csv('output/ButterflyNiche.csv')
 butt <- read.csv('output/ButterflyCleanbySite.csv')
 
 an <- left_join(niche, anthro, by = "Pond")
