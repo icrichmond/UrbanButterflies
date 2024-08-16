@@ -1,7 +1,7 @@
 ---
 title: "Supplementary Materials"
-subtitle: "Local and Regional Disturbance Around Urban Stormwater Ponds Determines their use as Butterfly Habitat"
-author: "Jesse D. Fortier*, Isabella C. Richmond, Mary Ann C. Perron, Frances Pick, and Heather Kharouba"
+subtitle: "The effects of urbanization and floral resources on butterfly biodiversity at stormwater ponds"
+author: "Jesse D. Fortier*, Isabella C. Richmond, Mary Ann C. Perron, Frances Pick, Christopher Schmidt and Heather Kharouba"
 format: 
   html:
     embed-resources: true
