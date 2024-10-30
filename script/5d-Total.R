@@ -52,7 +52,7 @@ shan_tot <- basic_plot(tot_sh, condition = "nspecies",
   annotate("text", x = 31, y = 8.2, label = bquote("p-value = " ~ .(round(summary(tot_sh)$coefficients[2,4], 2)))) +
   annotate("text", x = 31, y = 7.9, label = bquote(R^2 ~ " = "  ~ .(round(summary(tot_sh)$adj.r.squared , 2)))) 
 
-tot <- (ab_tot_n + ab_tot_avg ) / shan_tot + 
+tot <- (ab_tot_n + ab_tot_avg ) / (shan_tot + plot_spacer()) + 
   plot_annotation(tag_levels = 'a', tag_suffix = ")")
 
 ggsave('figures/TotalBloom.png', tot, height = 10, width = 10, units = 'in', dpi = 450)
