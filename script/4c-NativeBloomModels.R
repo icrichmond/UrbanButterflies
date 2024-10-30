@@ -33,3 +33,15 @@ dev.off()
 saveRDS(mod_ab, 'large/NatAbund.rds')
 saveRDS(mod_n_sr, 'large/NatNicheSR.rds')
 saveRDS(mod_sh, 'large/NatShann.rds')
+
+
+modelsummary(list("Abundance" = mod_ab, "Species Richness" = mod_n_sr, "Shannon Diversity" = mod_sh),
+             fmt = fmt_decimal(digits = 2, pdigits = 2),
+             statistic = c("conf.int","p.value"),
+             conf_level = .95,
+             shape = term ~ model + statistic,
+             gof_map = NA,
+             coef_rename = c("nnative" = "Number of Native Flowering Species",
+                             "avgnatbloom" = "Average Native Bloom Cover",
+                             "Niche.BreadthWetland specialist" = "Wetland specialist"),
+             output = "output/NativeBloomModels.docx")

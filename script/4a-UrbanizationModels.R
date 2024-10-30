@@ -33,3 +33,14 @@ dev.off()
 saveRDS(mod_ab_400, 'large/UrbAbund_400.rds')
 saveRDS(mod_n_sr_400, 'large/UrbNicheSR_400.rds')
 saveRDS(mod_sh_400, 'large/UrbShann_400.rds')
+
+
+modelsummary(list("Abundance" = mod_ab_400, "Species Richness" = mod_n_sr_400, "Shannon Diversity" = mod_sh_400),
+             fmt = fmt_decimal(digits = 2, pdigits = 2),
+             statistic = c("conf.int","p.value"),
+             conf_level = .95,
+             shape = term ~ model + statistic,
+             gof_map = NA,
+             coef_rename = c("anthroper_400" = "Anthropogenic Land Cover (%)",
+                             "Niche.BreadthWetland specialist" = "Wetland specialist"),
+             output = "output/AbundanceModels.docx")
