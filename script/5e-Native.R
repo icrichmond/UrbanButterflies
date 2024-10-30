@@ -55,6 +55,23 @@ ab_nat_int_avg <- int_plot(nat_ab, list("avgnatbloom" = 10), condition = c("Nich
                    xlab = "", ylab = "Change in butterfly abundance with 10% \nincrease in average native bloom cover")
 
 
+
+ab_nat_niche <- basic_plot(nat_ab, condition = c("nnative", "Niche.Breadth"), 
+                           dat = anp, x = nnative, y = Abundance,
+                           xlab = "Number of Native Flowering Species", ylab = "Butterfly Abundance") + 
+  annotate("text", x = 11, y = 94, label = bquote("IRR = " ~ .(round(exp(summary(nat_ab)$coefficients[5,1]), 2)) ~ "+/-" ~ .(round(exp(summary(nat_ab)$coefficients[5,2]), 2)))) + 
+  annotate("text", x = 11, y = 90, label = bquote("p-value = " ~ .(round(summary(nat_ab)$coefficients[5,4], 15)))) +
+  annotate("text", x = 11, y = 86, label = bquote(R^2 ~ " = "  ~ .(round((with(summary(nat_ab), 1 - deviance/null.deviance)), 2)))) 
+
+
+ab_cov_niche <- basic_plot(nat_ab, condition = c("avgnatbloom", "Niche.Breadth"), 
+                                         dat = anp, x = avgnatbloom, y = Abundance,
+                                         xlab = "Average Native Bloom Cover", ylab = "Butterfly Abundance") + 
+  annotate("text", x = 10, y = 94, label = bquote("IRR = " ~ .(round(exp(summary(nat_ab)$coefficients[6,1]), 2)) ~ "+/-" ~ .(round(exp(summary(nat_ab)$coefficients[6, 2]), 2)))) + 
+  annotate("text", x = 10, y = 90, label = bquote("p-value = " ~ .(round(summary(nat_ab)$coefficients[6,4], 9)))) +
+  annotate("text", x = 10, y = 86, label = bquote(R^2 ~ " = "  ~ .(round((with(summary(nat_ab), 1 - deviance/null.deviance)), 2)))) 
+
+
 # Species Richness
 sr_nat <- basic_plot(nat_n_sr, condition = "nnative", 
                      dat = anp, x = nnative, y = Species.Richness,
@@ -65,7 +82,7 @@ sr_nat <- basic_plot(nat_n_sr, condition = "nnative",
 
 
 
-ab_nat <- (ab_nat_n + ab_nat_avg) / (ab_nat_slope_n + ab_nat_int_avg) +
+ab_nat <- (ab_nat_n + ab_nat_avg) / (ab_nat_niche + ab_cov_niche) +
   plot_annotation(tag_levels = 'a', tag_suffix = ")")
 
 
