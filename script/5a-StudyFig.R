@@ -20,7 +20,7 @@ ponds <- ponds %>%
 # Note: for this code to work you need a Google API with Geocoding and Maps Static enabled
 register_google(key = "AIzaSyDlRF5BYeskCH7qWtq13WUV5ifG9Q1kT1c")
 ss <- qmap(location = "Terry Carisse Park, Ottawa, Ontario", zoom = 10, maptype = "satellite", source = "google") +
-  geom_point(data = ponds, aes(x = lat, y = long), colour = "black", size = 3, shape = 1, stroke = 1) + 
+  geom_point(data = ponds, aes(x = lat, y = long), colour = "red", linewidth = 3, shape = 1, stroke = 1) + 
   coord_sf(crs = st_crs(4326), expand = FALSE) +
   theme(panel.grid = element_line(color = '#323232', size = 0.2),
         axis.text = element_text(size = 11, color = 'black'),
