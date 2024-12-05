@@ -1,6 +1,9 @@
 # The effects of urbanization and floral resources on butterfly communities at stormwater ponds 
 
 
+[![DOI](https://zenodo.org/badge/420184467.svg)](https://doi.org/10.5281/zenodo.14277356)
+
+
 
 ## Authors
 Jesse D. Fortier, [Isabella C. Richmond](https://github.com/icrichmond/), [Mary Ann C. Perron](https://www.researchgate.net/profile/Mary-Ann-Perron), [Frances R. Pick](https://www.researchgate.net/profile/Frances-Pick), [B. Christian Schmidt](https://www.researchgate.net/profile/B-Schmidt), [Heather Kharouba](https://kharoubalab.weebly.com/)
