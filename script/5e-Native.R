@@ -13,7 +13,7 @@ niche <- read.csv('output/ButterflyNiche.csv')
 butt <- read.csv('output/ButterflyCleanbySite.csv')
 
 an <- left_join(niche, anthro, by = "Pond")
-anp <- left_join(an, plant, by = "Pond")
+anp <- left_join(an, plant, by = "Pond") 
 ab <- inner_join(anthro, butt, by = join_by("Pond" == "SWP"))
 abp <- inner_join(ab, plant, by = "Pond")
 
@@ -61,7 +61,9 @@ ab_nat_niche <- basic_plot(nat_ab, condition = c("nnative", "Niche.Breadth"),
                            xlab = "Number of Native Flowering Species", ylab = "Butterfly Abundance") + 
   annotate("text", x = 11, y = 94, label = bquote("IRR = " ~ .(round(exp(summary(nat_ab)$coefficients[5,1]), 2)) ~ "+/-" ~ .(round(exp(summary(nat_ab)$coefficients[5,2]), 2)))) + 
   annotate("text", x = 11, y = 90, label = bquote("p-value = " ~ .(round(summary(nat_ab)$coefficients[5,4], 15)))) +
-  annotate("text", x = 11, y = 86, label = bquote(R^2 ~ " = "  ~ .(round((with(summary(nat_ab), 1 - deviance/null.deviance)), 2)))) 
+  annotate("text", x = 11, y = 86, label = bquote(R^2 ~ " = "  ~ .(round((with(summary(nat_ab), 1 - deviance/null.deviance)), 2)))) + 
+  scale_fill_discrete(labels=c('Generalist', 'Wetland Specialist')) + 
+  scale_colour_discrete(labels=c('Generalist', 'Wetland Specialist'))
 
 
 ab_cov_niche <- basic_plot(nat_ab, condition = c("avgnatbloom", "Niche.Breadth"), 
@@ -69,7 +71,9 @@ ab_cov_niche <- basic_plot(nat_ab, condition = c("avgnatbloom", "Niche.Breadth")
                                          xlab = "Average Native Bloom Cover", ylab = "Butterfly Abundance") + 
   annotate("text", x = 10, y = 94, label = bquote("IRR = " ~ .(round(exp(summary(nat_ab)$coefficients[6,1]), 2)) ~ "+/-" ~ .(round(exp(summary(nat_ab)$coefficients[6, 2]), 2)))) + 
   annotate("text", x = 10, y = 90, label = bquote("p-value = " ~ .(round(summary(nat_ab)$coefficients[6,4], 9)))) +
-  annotate("text", x = 10, y = 86, label = bquote(R^2 ~ " = "  ~ .(round((with(summary(nat_ab), 1 - deviance/null.deviance)), 2)))) 
+  annotate("text", x = 10, y = 86, label = bquote(R^2 ~ " = "  ~ .(round((with(summary(nat_ab), 1 - deviance/null.deviance)), 2)))) + 
+  scale_fill_discrete(labels=c('Generalist', 'Wetland Specialist')) + 
+  scale_colour_discrete(labels=c('Generalist', 'Wetland Specialist'))
 
 
 # Species Richness
