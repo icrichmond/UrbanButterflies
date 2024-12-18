@@ -36,8 +36,10 @@ saveRDS(mod_sh_400, 'large/UrbShann_400.rds')
 
 
 modelsummary(list("Abundance" = mod_ab_400, "Species Richness" = mod_n_sr_400, "Shannon Diversity" = mod_sh_400),
-             fmt = fmt_decimal(digits = 2, pdigits = 2),
-             statistic = c("conf.int","p.value"),
+             fmt = NULL,
+             estimate = "{round(estimate, 2)}",
+             exponentiate = T, 
+             statistic = c("({round(conf.low, 2)}, {round(conf.high, 2)})", "{signif(p.value, 1)}"),
              conf_level = .95,
              shape = term ~ model + statistic,
              gof_map = NA,

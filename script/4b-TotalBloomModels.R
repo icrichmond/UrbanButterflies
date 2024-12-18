@@ -36,12 +36,14 @@ saveRDS(mod_sh, 'large/TotShann.rds')
 
 
 modelsummary(list("Abundance" = mod_ab, "Species Richness" = mod_n_sr, "Shannon Diversity" = mod_sh),
-             fmt = fmt_decimal(digits = 2, pdigits = 2),
-             statistic = c("conf.int","p.value"),
+             fmt = NULL,
+             estimate = "{round(estimate, 2)}",
+             exponentiate = T, 
+             statistic = c("({round(conf.low, 2)}, {round(conf.high, 2)})", "{signif(p.value, 1)}"),
              conf_level = .95,
              shape = term ~ model + statistic,
              gof_map = NA,
              coef_rename = c("nspecies" = "Number of Flowering Plant Species",
-                             "avgbloom" = "Average Total Bloom Cover",
-                             "Niche.BreadthWetland specialist" = "Wetland specialist"),
+                               "avgbloom" = "Average Total Bloom Cover",
+                               "Niche.BreadthWetland specialist" = "Wetland specialist"),
              output = "output/TotalBloomModels.docx")
