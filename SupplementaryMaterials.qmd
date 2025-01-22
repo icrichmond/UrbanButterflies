@@ -1,11 +1,14 @@
 ---
 title: "Supplementary Materials"
 subtitle: "The effects of urbanization and floral resources on butterfly biodiversity at stormwater ponds"
-author: "Jesse D. Fortier*, Isabella C. Richmond, Mary Ann C. Perron, Frances Pick, Christopher Schmidt and Heather Kharouba"
-format: 
+format:
   html:
     embed-resources: true
 ---
+
+Authors: Jesse D. Fortier(co-first author), Mary Ann C. Perron* (co-first author), Isabella C. Richmond, Frances R. Pick, B. Christian Schmidt, and Heather M. Kharouba
+
+(\*) Corresponding author: Mary Ann Perron, maperron@riverinstitute.ca 
 
 ```{r}
 #| echo: false
@@ -32,10 +35,8 @@ abp <- inner_join(ab, plant, by = "Pond")
 
 ```
 
-(\*) University of Ottawa, Department of Earth and Environmental Sciences, 150, Louis-Pasteur Private, Ottawa, Ontario, Canada, K1N 6N5\
-email: [jfort073\@uottawa.ca](mailto:jfort073@uottawa.ca){.email}
 
-This supplementary information file contains (1) variable descriptions, (2) descriptive statistics for each study site, (3) summary tables of each model, (4) an abundance histogram of all species found. All associated code can be found at the paper's associated GitHub repository, [here](https://github.com/icrichmond/UrbanButterflies).
+This supplementary information file contains (1) variable descriptions, (2) descriptive statistics for each study site, (3) summary tables of each model, (4) an abundance histogram of all species found, (5) a figure showing the interaction effect of niche breadth for butterfly abundance as explained by number of native flowering species. All associated code can be found at the paper's associated GitHub repository, [here](https://github.com/icrichmond/UrbanButterflies).
 
 ------------------------------------------------------------------------
 
@@ -88,3 +89,43 @@ knitr::kable(df, digits = 2)
 ![](figures/AbundanceHistogram.png)
 
 Figure S1. Raw abundance counts for each species identified and counted for this study. If a species level identification was not possible, we used genus level. If a genus level identification was not possible, we used family.
+
+# Butterfly Abundance and Number of Native Flowering Species 
+
+
+```{r}
+#| echo: false
+#| eval: true
+#| warning: false
+#| message: false
+#| label: interaction-effect
+
+nat_ab <- readRDS('large/NatAbund.rds')
+
+plant <- read.csv('output/PlantCleanbySite.csv') %>% 
+  mutate(Pond = str_remove(Pond, "SWF-"),
+         Pond = as.numeric(Pond))
+anthro <- st_read("output/AnthroFull.gpkg", quiet = T)
+niche <- read.csv('output/ButterflyNiche.csv')
+butt <- read.csv('output/ButterflyCleanbySite.csv')
+
+an <- left_join(niche, anthro, by = "Pond")
+anp <- left_join(an, plant, by = "Pond") 
+
+
+plot_predictions(nat_ab, condition = c("nnative", "Niche.Breadth")) + 
+    geom_point(aes(x = nnative, y = Abundance, colour = Niche.Breadth), data = anp) + 
+    labs(x = "Number of Native Flowering Species", y = "Butterfly Abundance", colour = "", fill = "") + 
+    scale_fill_manual(values = c("#3b7c70", "#ce9642"), labels = c("Generalist", "Wetland Specialist")) + 
+    scale_colour_manual(values = c("#3b7c70", "#ce9642"), labels = c("Generalist", "Wetland Specialist")) + 
+    theme_classic() + 
+    theme(axis.text = element_text(size = 12, colour = "black"),
+          axis.title = element_text(size = 13, colour = "black"), 
+          legend.text = element_text(size = 12, colour = "black"),
+          legend.position = "none") + 
+  facet_wrap(~ Niche.Breadth, scales = "free")
+
+
+```
+
+Figure S2. Native plant community models showing the the interaction between number of native flowering species and niche breadth. IRR = 1.06 +/ 1.03, p-value = 0.02, R2 = 0.69. Here we are reporting the IRR value from the interaction where the value represents the effect size of the wetland specialist group interacting with number of native flowering species and average native bloom cover compared to the effect size of the generalist group. Points are raw data from individual stormwater pond sites. Plots made using the marginaleffects package and ggplot2 (Arel-Bundock et al., 2024; Wickham et al., 2016).
