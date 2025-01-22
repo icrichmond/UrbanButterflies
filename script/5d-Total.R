@@ -27,7 +27,7 @@ tot_sh <- readRDS('large/TotShann.rds')
 # Total Bloom -------------------------------------------------------------
 
 # Abundance 
-ab_tot_avg <- basic_plot(tot_ab, condition = c("avgbloom"), 
+ab_tot_avg <- basic_plot(tot_ab, condition = c("avgbloom"), colour = Niche.Breadth,
                          dat = anp, x = avgbloom, y = Abundance,
                        xlab = "Average Total Bloom Cover", ylab = "Butterfly Abundance") + 
   annotate("text", x = 19, y = 95, label = bquote("IRR = " ~ .(round(exp(summary(tot_ab)$coefficients[3,1]), 2)) ~ "+/-" ~ .(round(exp(summary(tot_ab)$coefficients[3,2]), 2)))) + 
@@ -35,8 +35,8 @@ ab_tot_avg <- basic_plot(tot_ab, condition = c("avgbloom"),
   annotate("text", x = 19, y = 86, label = bquote(R^2 ~ " = "  ~ .(round((with(summary(tot_ab), 1 - deviance/null.deviance)), 2))))
 
 
-ab_tot_n <- basic_plot(tot_ab, condition = c("nspecies"), dat = anp,
-                       x = nspecies, y = Abundance,
+ab_tot_n <- basic_plot(tot_ab, condition = c("nspecies"), colour = Niche.Breadth,
+                       dat = anp,x = nspecies, y = Abundance,
                        xlab = "Number of Flowering Plant Species", ylab = "Butterfly Abundance") + 
   annotate("text", x = 30, y = 95, label = bquote("IRR = " ~ .(round(exp(summary(tot_ab)$coefficients[2,1]), 2)) ~ "+/-" ~ .(round(exp(summary(tot_ab)$coefficients[2,2]), 2)))) + 
   annotate("text", x = 30, y = 90, label = bquote("p-value = " ~ .(round(summary(tot_ab)$coefficients[2,4], 3)))) +
@@ -52,8 +52,9 @@ shan_tot <- basic_plot(tot_sh, condition = "nspecies",
   annotate("text", x = 31, y = 8.2, label = bquote("p-value = " ~ .(round(summary(tot_sh)$coefficients[2,4], 2)))) +
   annotate("text", x = 31, y = 7.9, label = bquote(R^2 ~ " = "  ~ .(round(summary(tot_sh)$adj.r.squared , 2)))) 
 
-tot <- (ab_tot_n + ab_tot_avg ) / (shan_tot + plot_spacer()) + 
-  plot_annotation(tag_levels = 'a', tag_suffix = ")")
+tot <- ab_tot_n + ab_tot_avg + shan_tot + guide_area() + 
+  plot_annotation(tag_levels = 'a', tag_suffix = ")") +
+  plot_layout(guides = 'collect', nrow = 2)
 
 ggsave('figures/TotalBloom.png', tot, height = 10, width = 10, units = 'in', dpi = 450)
 

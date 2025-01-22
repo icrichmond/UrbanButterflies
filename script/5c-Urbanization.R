@@ -26,7 +26,7 @@ urb_sh_400 <- readRDS('large/UrbShann_400.rds')
 
 # Abundance 
 
-ab_an <- basic_plot(urb_ab_400, condition = "anthroper_400", 
+ab_an <- basic_plot(urb_ab_400, condition = "anthroper_400", colour = Niche.Breadth,
            dat = anp, x = anthroper_400, y = Abundance,
            xlab = "Anthropogenic Land Cover (%)", ylab = "Butterfly Abundance") + 
   annotate("text", x = 0.75, y = 100, label = bquote("IRR = " ~ .(round(exp(summary(urb_ab_400)$coefficients[2,1]), 2)) ~ "+/-" ~ .(round(exp(summary(urb_ab_400)$coefficients[2,2]), 2)))) + 
@@ -37,7 +37,7 @@ ab_an <- basic_plot(urb_ab_400, condition = "anthroper_400",
 
 # Species Richness 
 
-sr_an <- basic_plot(urb_n_sr_400, condition = "anthroper_400", 
+sr_an <- basic_plot(urb_n_sr_400, condition = "anthroper_400", colour = Niche.Breadth,
                     dat = anp, x = anthroper_400, y = Species.Richness,
                     xlab = "Anthropogenic Land Cover (%)", ylab = "Butterfly Species Richness") + 
   annotate("text", x = 0.75, y = 16, label = bquote("IRR = " ~ .(round(exp(summary(urb_n_sr_400)$coefficients[2,1]), 2)) ~ "+/-" ~ .(round(exp(summary(urb_n_sr_400)$coefficients[2,2]), 2)))) + 
@@ -53,8 +53,9 @@ sh_an <- basic_plot(urb_sh_400, condition = "anthroper_400",
   annotate("text", x = 0.65, y = 7.7, label = bquote(R^2 ~ " = "  ~ .(round(summary(urb_sh_400)$adj.r.squared , 2)))) 
 
 
-urb <- (ab_an + sr_an) / (sh_an + plot_spacer()) +
-  plot_annotation(tag_levels = 'a', tag_suffix = ')')
+urb <- ab_an + sr_an + sh_an + guide_area() +
+  plot_annotation(tag_levels = 'a', tag_suffix = ')') +
+  plot_layout(guides = 'collect', nrow = 2)
   
 # Save --------------------------------------------------------------------
 ggsave('figures/Urbanization.png', urb, height = 8, width = 10, units = 'in', dpi = 450)
