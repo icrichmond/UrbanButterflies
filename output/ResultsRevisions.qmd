@@ -276,4 +276,122 @@ Figure 3. Native plant community models showing the relationship between butterf
 
 # White Cabbage
 
-We want to see how large of an effect the overwhelming abundance of white cabbage is having on our results. I ran all of the same analyses **without** *Pieris rapae* in the dataset:
+We want to see how large of an effect the overwhelming abundance of white cabbage is having on our results. I ran all of the same analyses **without** *Pieris rapae* in the dataset.
+
+-   minimum sampling coverage for generalists drops from 0.7651 to 0.3333
+
+![](../figures/Generalist_SamplingCov_noCW.png)
+
+## Urbanization Model
+
+```{r}
+#| echo: false
+#| eval: true
+#| message: false
+#| warning: false
+#| label: urb-cw
+
+
+anthro <- st_read("output/AnthroFull.gpkg", quiet = T)
+butt_cw <- read.csv('output/ButterflyCleanbySite_noCW.csv')
+
+ab <- inner_join(anthro, butt_cw, by = join_by("Pond" == "SWP"))
+
+# Model -------------------------------------------------------------------
+
+mod_ab_400_cw <- glm.nb(abund ~ 1 + anthroper_400 * Niche.Breadth + SamplingArea, data = ab)
+mod_n_sr_400_cw <- lm(SpeciesRichness ~ 1 + anthroper_400 * Niche.Breadth + SamplingArea, data = ab)
+mod_sh_400_cw <- lm(Shannon ~ 1 + anthroper_400 * Niche.Breadth + SamplingArea, data = ab)
+
+
+modelsummary(list("Abundance" = mod_ab_400_cw, "Species Richness" = mod_n_sr_400_cw, "Shannon Diversity" = mod_sh_400_cw),
+             fmt = NULL,
+             estimate = "{round(estimate, 2)}",
+             exponentiate = c(TRUE, TRUE, FALSE), 
+             statistic = c("CI" = "({round(conf.low, 2)}, {round(conf.high, 2)})", "p-value" = "{signif(p.value, 1)}"),
+             conf_level = .95,
+             shape = term ~ model + statistic,
+             gof_map = NA,
+             coef_rename = c("anthroper_400" = "Anthropogenic Land Cover (%)",
+                             "SamplingArea" = "Site Area (units)",
+                             "Niche.BreadthSpecialist" = "Wetland specialist"))
+
+
+```
+
+
+## Total Plant Model
+
+```{r}
+#| echo: false
+#| eval: true
+#| message: false
+#| warning: false
+#| label: tot-cw
+ 
+plant <- read.csv('output/PlantCleanbySite.csv') %>% 
+  mutate(Pond = str_remove(Pond, "SWF-"),
+         Pond = as.numeric(Pond))
+
+pb_cw <- inner_join(plant, butt_cw, by = join_by("Pond" == "SWP")) %>% 
+  inner_join(., anthro)
+
+# Model -------------------------------------------------------------------
+
+mod_ab_cw <- glm.nb(abund ~ 1 + nspecies + avgbloom + SamplingArea + nspecies * Niche.Breadth + avgbloom*Niche.Breadth, data = pb_cw)
+mod_n_sr_cw <- lm(SpeciesRichness ~ 1 +  nspecies + avgbloom + SamplingArea + nspecies * Niche.Breadth + avgbloom*Niche.Breadth,  data = pb_cw)
+mod_sh_cw <- lm(Shannon ~ 1 +  nspecies + avgbloom + SamplingArea + nspecies * Niche.Breadth + avgbloom*Niche.Breadth, data = pb_cw)
+
+
+modelsummary(list("Abundance" = mod_ab_cw, "Species Richness" = mod_n_sr_cw, "Shannon Diversity" = mod_sh_cw),
+             fmt = NULL,
+             estimate = "{round(estimate, 2)}",
+             exponentiate = c(TRUE, TRUE, FALSE), 
+             statistic = c("CI" = "({round(conf.low, 2)}, {round(conf.high, 2)})", "p-value" = "{signif(p.value, 1)}"),
+             conf_level = .95,
+             shape = term ~ model + statistic,
+             gof_map = NA,
+             coef_rename = c("nspecies" = "Number of Flowering Plant Species",
+                               "avgbloom" = "Average Total Bloom Cover",
+                             "SamplingArea" = "Site Area (units)",
+                               "Niche.BreadthSpecialist" = "Wetland specialist"))
+
+```
+
+## Native Plant Model
+```{r}
+#| echo: false
+#| eval: true
+#| message: false
+#| warning: false
+#| label: nat-cw
+ 
+# Model -------------------------------------------------------------------
+
+mod_ab_nat_cw <- glm.nb(abund ~ 1 + nnative + avgnatbloom + SamplingArea + nnative * Niche.Breadth + avgnatbloom * Niche.Breadth, data = pb_cw)
+mod_n_sr_nat_cw <- lm(SpeciesRichness ~ 1 + nnative + avgnatbloom + SamplingArea + nnative * Niche.Breadth + avgnatbloom*Niche.Breadth, data = pb_cw)
+mod_sh_nat_cw <- lm(Shannon ~ 1 + nnative + avgnatbloom + SamplingArea + nnative * Niche.Breadth + avgnatbloom*Niche.Breadth, data = pb_cw)
+
+
+modelsummary(list("Abundance" = mod_ab_nat_cw, "Species Richness" = mod_n_sr_nat_cw, "Shannon Diversity" = mod_sh_nat_cw),
+             fmt = NULL,
+             estimate = "{round(estimate, 2)}",
+             exponentiate = c(TRUE, TRUE, FALSE), 
+             statistic = c("CI" = "({round(conf.low, 2)}, {round(conf.high, 2)})", "p-value" = "{signif(p.value, 1)}"),
+             conf_level = .95,
+             shape = term ~ model + statistic,
+             gof_map = NA,
+             coef_rename = c("nspecies" = "Number of Flowering Plant Species",
+                               "avgbloom" = "Average Total Bloom Cover",
+                             "SamplingArea" = "Site Area (units)",
+                               "Niche.BreadthSpecialist" = "Wetland specialist"))
+
+```
+
+## Summary
+
+- lose most significant relationships when cabbage white is removed, not enough observations to detect an effect of urbanization/floral resources. therefore, most of our relationships are being driven by the presence of cabbage white 
+
+- generally, our estimates maintain the same direction of effect but get closer to zero 
+
+- species richness models have different significant effects when cabbage white is removed (abundance becomes significant instead of species richness/Shannon)
