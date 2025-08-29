@@ -5,8 +5,6 @@ format: html
 
 # General Notes
 
--   Overdispersion detected in abundance models. I have switched from Poisson to negative binomial to address the issue. New model outputs below.
-
 
 
 # Rarefaction
@@ -16,6 +14,10 @@ We have only 4 specialist species in our study. I rareified specialists and gene
 Many sites have no specialist species. Of the sites that do, most of them have only one specialist species, which makes estimation of sampling coverage not robust. All sites were determined to have a sampling coverage of 1, displaying that the rareified calculations for specialists are most likely not accurate.
 
 The removal of the specialist species did not impact the sampling coverage of the generalist species, which was rareified to 0.7521 for comparison.
+
+Because of rarefaction, species richness values are no longer true counts but decimals. Species richness models are now general linear models with a Normal error distribution (instead of Poisson).
+
+Shannon diversity now has niche breadth included in the models as we have rareified both niche groups.
 
 Generalists:
 
@@ -38,6 +40,11 @@ Specialists:
 
 -   However, we also believe that area affects butterfly community not only through sampling coverage but through a direct mechanism. We expect that ponds of different sizes will have different abundances and species composition because of their size. Therefore, I have added area to the models. Though, as stated above I am not 100% sure what the metric of area represents.
 
+-   I didn't add any interaction terms with sampling area in the models, but we could if we have a hypothesis supporting that. We just need to be wary of overfitting our models as we don't have very many observations.
+
+# Overdispersion 
+
+-   Overdispersion detected in abundance models. I have switched from Poisson to negative binomial to address the issue. New model outputs below.
 
 
 # New Model Results

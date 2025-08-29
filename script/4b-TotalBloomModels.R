@@ -5,17 +5,19 @@ source('script/0-Packages.R')
 plant <- read.csv('output/PlantCleanbySite.csv') %>% 
   mutate(Pond = str_remove(Pond, "SWF-"),
          Pond = as.numeric(Pond))
-niche <- read.csv('output/ButterflyNiche.csv')
 butt <- read.csv('output/ButterflyCleanbySite.csv')
+anthro <- st_read("output/AnthroFull.gpkg") %>% 
+  st_drop_geometry() %>% 
+  dplyr::select(c(Pond, SamplingArea))
 
-pn <- left_join(niche, plant, by = "Pond")
-pb <- inner_join(plant, butt, by = join_by("Pond" == "SWP"))
+pb <- inner_join(plant, butt, by = join_by("Pond" == "SWP")) %>% 
+  inner_join(., anthro)
 
 # Model -------------------------------------------------------------------
 
-mod_ab <- glm(Abundance ~ 1 + nspecies + avgbloom + nspecies * Niche.Breadth + avgbloom*Niche.Breadth, family = poisson(), data = pn)
-mod_n_sr <- glm(Species.Richness ~ 1 +  nspecies + avgbloom + nspecies * Niche.Breadth + avgbloom*Niche.Breadth, family = poisson(), data = pn)
-mod_sh <- lm(Shannon ~ nspecies + avgbloom, data = pb)
+mod_ab <- glm.nb(abund ~ 1 + nspecies + avgbloom + SamplingArea + nspecies * Niche.Breadth + avgbloom*Niche.Breadth, data = pb)
+mod_n_sr <- lm(SpeciesRichness ~ 1 +  nspecies + avgbloom + SamplingArea + nspecies * Niche.Breadth + avgbloom*Niche.Breadth,  data = pb)
+mod_sh <- lm(Shannon ~ 1 +  nspecies + avgbloom + SamplingArea + nspecies * Niche.Breadth + avgbloom*Niche.Breadth, data = pb)
 
 # Diagnostics -------------------------------------------------------------
 
@@ -45,5 +47,6 @@ modelsummary(list("Abundance" = mod_ab, "Species Richness" = mod_n_sr, "Shannon 
              gof_map = NA,
              coef_rename = c("nspecies" = "Number of Flowering Plant Species",
                                "avgbloom" = "Average Total Bloom Cover",
+                             "SamplingArea" = "Site Area (units)",
                                "Niche.BreadthWetland specialist" = "Wetland specialist"),
              output = "output/TotalBloomModels.docx")
