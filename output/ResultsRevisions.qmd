@@ -1,0 +1,28 @@
+---
+title: "Results Revisions 1.0"
+format: html
+---
+
+# General Notes 
+
+Collinearity was checked before creating models. All explanatory variables have a maximum Pearson correlation score of < 0.5.
+
+Overdispersion detected in abundance models (original). 
+
+Sampling area values in data sheets (used for area variable in models) do not align with the pond area descriptions in methods. Values range from 1246 to 6966. I am not sure of the units or what these values represent. Potentially the green space area surrounding the pond? I remember Jesse working to delineate that.
+
+# Rarefaction 
+
+We have only 4 specialist species in our study. I rareified specialists and generalists separately, to obtain different abundance/diversity metrics for each group but this may not make biological sense.
+
+
+
+
+
+# Area
+
+# VIF 
+
+# White Cabbage 
+
+# IRR Issues
