@@ -49,7 +49,6 @@ write.csv(buttab, "output/ButterflyAbundance.csv")
 
 
 # Diversity ---------------------------------------------------------------
-
 # use iNEXT to calculate Shannon diversity, Simpson diversity, and species richness 
 # calculate the sampling coverage in our study to standardize our values wrt sampling effort 
 nextd <- sapply(buttab2, as.numeric)
@@ -60,27 +59,51 @@ nextd <- nextd %>%
   summarise(across(HESSP:DANPLE, sum))
 nextd <- nextd %>% 
   select_if(colSums(.) != 0)
-nextdl <- pivot_longer(nextd, HESSP:DANPLE)
-nextdw <- pivot_wider(nextdl, names_from = SWP) %>% 
+
+# separate by Niche Breadth 
+
+nextgendl <- nextd %>% 
+  select(-c(ANCNUM, EUPDIO, LYCHYL, SATEUR)) %>% 
+  pivot_longer(., HESSP:DANPLE) %>% 
+  pivot_wider(., names_from = SWP) %>% 
   column_to_rownames("name") %>% 
   select_if(colSums(.) != 0)
-nextd <- as.list(nextdw)
+
+nextspecdl <- nextd %>% 
+  select(c(SWP, ANCNUM, EUPDIO, LYCHYL, SATEUR)) %>% 
+  pivot_longer(., ANCNUM:SATEUR) %>% 
+  pivot_wider(., names_from = SWP) %>% 
+  column_to_rownames("name") %>% 
+  select_if(colSums(.) != 0)
+
+
+nextgend <- as.list(nextgendl)
+nextspecd <- as.list(nextspecdl)
+ 
+
 # calculate iNEXT object
-outrich <- iNEXT(nextd, q=0 ,datatype="abundance") # use min and max abundances observed for size
-# visualize sample coverage
-sample.coverage <- ggiNEXT(outrich, type= 2) + theme(legend.position = 'none')
-coverage.by.richness <- ggiNEXT(outrich, type= 3)+ theme(legend.position = 'none') + ylim(c(-1,30))
+outrich_gen <- iNEXT(nextgend, q=0 ,datatype="abundance") # use min and max abundances observed for size
+outrich_spec <- iNEXT(nextspecd, q=0 ,datatype="abundance")
 # extract sample coverage info
 # n = sample size, S.obs = species richness, SC = sample coverage
-outrich$DataInfo
 # calculate diversity values at the lowest sample coverage value
 # q(order) 0 = species richness, 1 = Shannon diversity, 2 = Simpson diversity
-cov <- min(outrich$DataInfo$SC)
-rarediv <- estimateD(nextdw, datatype = "abundance", base = "coverage", 
-                     level= cov, conf=0.95)
-rarediv_w <- pivot_wider(rarediv, id_cols = Assemblage, names_from = Order.q,
-                         names_sep = ".", values_from = c(m, SC, qD))
-rarediv_w <- rarediv_w %>% 
+cov_gen <- min(outrich_gen$DataInfo$SC)
+cov_spec <- min(outrich_spec$DataInfo$SC)
+
+rarediv_gen <- estimateD(nextgendl, datatype = "abundance", base = "coverage", 
+                     level= cov_gen, conf=0.95) %>% 
+  mutate(Niche.Breadth = "Generalist")
+
+
+rarediv_spec <- estimateD(nextspecdl, datatype = "abundance", base = "coverage", 
+                         level= cov_spec, conf=0.95) %>% 
+  mutate(Niche.Breadth = "Specialist")
+
+
+rarediv <- rbind(rarediv_gen, rarediv_spec) %>% 
+  pivot_wider(., id_cols = c(Assemblage, Niche.Breadth), names_from = Order.q,
+                         names_sep = ".", values_from = c(m, SC, qD)) %>% 
   select(-c(m.1, m.2, SC.1, SC.2)) %>% 
   rename(SWP = Assemblage, 
          method = m.0, 
@@ -88,29 +111,40 @@ rarediv_w <- rarediv_w %>%
          SpeciesRichness = qD.0, 
          Shannon = qD.1, 
          Simpson = qD.2)
+
 # abundance
 buttab_site <- buttab %>%
   group_by(SWP) %>% 
   summarise(abund = sum(across(HESSP:DANPLE), na.rm = T))
 buttab_site$SWP <- as.character(buttab_site$SWP)
 # join all metrics
-butt_site <- inner_join(buttab_site, rarediv_w)
+butt_site <- inner_join(buttab_site, rarediv)
 
 
-
-# Collapse Niches ---------------------------------------------------------
-
-buttniche$Niche.Breadth <- as.factor(buttniche$Niche.Breadth)
-buttniche$Niche.Breadth <- fct_collapse(buttniche$Niche.Breadth,
-                                        `Wetland non-specialist` = c("Non-wetland", "Wetland associated"),
-                                        `Wetland specialist` = c("Wetland specialist"))
-buttniche <- buttniche %>% 
-  group_by(Pond, Niche.Breadth) %>% 
-  summarize(Abundance = sum(Abundance), 
-            Species.Richness = sum(Species.Richness))
 
 # Save --------------------------------------------------------------------
 
 write_csv(buttsp, "output/ButterflySpecies.csv")
 write_csv(butt_site, "output/ButterflyCleanbySite.csv")
 write_csv(buttniche, 'output/ButterflyNiche.csv')
+
+
+
+# Figures -----------------------------------------------------------------
+
+gen_1 <- ggiNEXT(outrich_gen, type= 1) + theme(legend.position = 'none')
+gen_2 <- ggiNEXT(outrich_gen, type= 2) + theme(legend.position = 'none')
+gen_3 <- ggiNEXT(outrich_gen, type= 3) + theme(legend.position = 'none')
+
+gen_fig <- gen_1 | gen_2 | gen_3
+
+ggsave('figures/Generalist_SamplingCov.png', gen_fig, width = 15, height = 10, units = 'in')
+
+spec_1 <- ggiNEXT(outrich_spec, type= 1) + theme(legend.position = 'none')
+spec_2 <- ggiNEXT(outrich_spec, type= 2) + theme(legend.position = 'none')
+spec_3 <- ggiNEXT(outrich_spec, type= 3) + theme(legend.position = 'none')
+
+spec_fig <- spec_1 | spec_2 | spec_3
+
+ggsave('figures/Specialist_SamplingCov.png', spec_fig, width = 15, height = 10, units = 'in')
+
