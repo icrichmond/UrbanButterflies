@@ -4,6 +4,8 @@ format:
   html:
     toc: true
     embed-resources: true
+    fig-width: 12
+    fig-height: 12
 ---
 
 ```{r}
@@ -15,10 +17,7 @@ format:
 
 knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
 
-
 ```
-
-# General Notes
 
 # Rarefaction
 
@@ -92,7 +91,44 @@ modelsummary(list("Abundance" = mod_ab_400, "Species Richness" = mod_n_sr_400, "
 
 ```
 
-Figure 1. Shannon diversity interaction effect
+```{r}
+#| echo: false
+#| eval: true
+#| message: false
+#| warning: false
+#| label: figure-1
+
+source('script/function-BasicPlot.R')
+
+# Data --------------------------------------------------------------------
+plant <- read.csv('output/PlantCleanbySite.csv') %>% 
+  mutate(Pond = str_remove(Pond, "SWF-"),
+         Pond = as.numeric(Pond))
+anthro <- st_read("output/AnthroFull.gpkg", quiet = T)
+butt <- read.csv('output/ButterflyCleanbySite.csv')
+
+ab <- inner_join(anthro, butt, by = join_by("Pond" == "SWP"))
+abp <- inner_join(ab, plant, by = "Pond")
+
+
+# Species Richness
+
+sr_an <- basic_plot(mod_n_sr_400, condition = c("anthroper_400", "Niche.Breadth"), colour = Niche.Breadth,
+           dat = abp, x = anthroper_400, y = SpeciesRichness,
+           xlab = "Anthropogenic Land Cover (%)", ylab = "Butterfly Species Richness") 
+
+
+# Shannon
+sh_an <- basic_plot(mod_sh_400, condition = c("anthroper_400", "Niche.Breadth"), 
+                    colour = Niche.Breadth,
+                    dat = abp, x = anthroper_400, y = Shannon,
+                    xlab = "Anthropogenic Land Cover (%)", ylab = "Butterfly Shannon") 
+
+sr_an + sh_an +  plot_layout(guides = 'collect') & theme(legend.position = "top")
+
+```
+
+Figure 1. Disturbance model results for a 400 m buffer surrounding ponds. The relationship between the interaction of percent anthropogenic land cover in the buffer and niche breadth and (a) rareified butterfly species richness; (b) rareified butterfly Shannon. Points are raw data from individual stormwater pond sites. Band indicates the 95% confidence interval. Plots made using the marginaleffects package and ggplot2 (Arel-Bundock et al., 2024; Wickham et al., 2016).
 
 Table 2. Model summaries of the effect of total plant bloom on butterfly communities. The first three columns display the results of the model with butterfly abundance as a response, the second three columns with butterfly species richness, and the last three columns with butterfly Shannon diversity. ‘Est’ indicates model estimate; ‘CI’ represents confidence intervals, which are 95 % for all models; ‘p’ indicates the p-value of that row’s variable. The estimates for the abundance model (1st column) are presented as incidence rate ratios (IRRs), where decimal numbers between 0 and 1 indicate negative relationships and numbers 1 and above indicate positive relationships. Niche breadth categories are presented in comparison to the intercept, which is the generalist niche for this table. ‘:’ in the table indicates an interaction effect.
 
@@ -102,12 +138,12 @@ Table 2. Model summaries of the effect of total plant bloom on butterfly communi
 #| label: table-2
 
 
-mod_ab <- readRDS('large/TotAbund.rds')
-mod_n_sr <- readRDS('large/TotNicheSR.rds')
-mod_sh <- readRDS('large/TotShann.rds')
+mod_ab_tot <- readRDS('large/TotAbund.rds')
+mod_n_sr_tot <- readRDS('large/TotNicheSR.rds')
+mod_sh_tot <- readRDS('large/TotShann.rds')
 
 
-modelsummary(list("Abundance" = mod_ab, "Species Richness" = mod_n_sr, "Shannon Diversity" = mod_sh),
+modelsummary(list("Abundance" = mod_ab_tot, "Species Richness" = mod_n_sr_tot, "Shannon Diversity" = mod_sh_tot),
              fmt = NULL,
              estimate = "{round(estimate, 2)}",
              exponentiate = c(TRUE, TRUE, FALSE), 
@@ -122,7 +158,45 @@ modelsummary(list("Abundance" = mod_ab, "Species Richness" = mod_n_sr, "Shannon 
 
 ```
 
-Figure 2.
+```{r}
+#| echo: false
+#| eval: true
+#| message: false
+#| warning: false
+#| label: figure-2
+
+# Abundance
+ab_cov <- basic_plot(mod_ab_tot, condition = c("avgbloom"), 
+           dat = abp, x = avgbloom, y = abund,
+           xlab = "Average Total Bloom Cover", ylab = "Butterfly Abundance") 
+
+
+# Species Richness
+
+sr_ntot <- basic_plot(mod_n_sr_tot, condition = c("nspecies"), 
+           dat = abp, x = nspecies, y = SpeciesRichness,
+           xlab = "Number of Flowering Species", ylab = "Butterfly Species Richness") 
+
+sr_cov <- basic_plot(mod_n_sr_tot, condition = c("avgbloom", "Niche.Breadth"), colour = Niche.Breadth,
+           dat = abp, x = avgbloom, y = SpeciesRichness,
+           xlab = "Average Total Bloom Cover", ylab = "Butterfly Species Richness") 
+
+
+# Shannon
+sh_ntot <- basic_plot(mod_sh_tot, condition = c("nspecies"), 
+           dat = abp, x = nspecies, y = Shannon,
+           xlab = "Number of Flowering Species", ylab = "Butterfly Shannon") 
+
+sh_cov <- basic_plot(mod_sh_tot, condition = c("avgbloom"), 
+           dat = abp, x = avgbloom, y = Shannon,
+           xlab = "Average Total Bloom Cover", ylab = "Butterfly Shannon") 
+
+
+sr_ntot + sr_cov + sh_ntot + sh_cov + ab_cov + plot_layout(ncol = 2, nrow =3, guides = 'collect') & theme(legend.position = "top")
+
+```
+
+Figure 2. Total plant community model results, (a) the relationship between butterfly species richness and number of flowering plant species; (b) butterfly species richness and average total bloom cover; (c) butterfly Shannon diversity and number of flowering plant species; (d) butterfly Shannon diversity and average total bloom cover; (e) butterfly abundance and average total bloom cover. Points are raw data for individual stormwater ponds. There are more points than ponds (n = 21) for abundance models because each pond has values for wetland specialist and generalist niche breadths, indicated by colour. Bands indicates the 95% confidence interval. Plots made using the marginaleffects package and ggplot2 (Arel-Bundock et al., 2024; Wickham et al., 2016)
 
 Table 3. Model summaries of the effect of native plant bloom on butterfly communities. The first three columns display the results of the model with butterfly abundance as a response, the second three columns with butterfly species richness, and the last three columns with butterfly Shannon diversity. ‘Est’ indicates model estimate; ‘CI’ represents confidence intervals, which are 95 % for all models; ‘p’ indicates the p-value of that row’s variable. The estimates for the abundance model (1st column) are presented as incidence rate ratios (IRRs), where decimal numbers between 0 and 1 indicate negative relationships and numbers 1 and above indicate positive relationships. Niche breadth categories are presented in comparison to the intercept, which is the generalist niche for this table. ‘:’ in the table indicates an interaction effect.
 
@@ -132,12 +206,12 @@ Table 3. Model summaries of the effect of native plant bloom on butterfly commun
 #| label: table-3
 
 
-mod_ab <- readRDS('large/NatAbund.rds')
-mod_n_sr <- readRDS('large/NatNicheSR.rds')
-mod_sh <- readRDS('large/NatShann.rds')
+mod_ab_nat <- readRDS('large/NatAbund.rds')
+mod_n_sr_nat <- readRDS('large/NatNicheSR.rds')
+mod_sh_nat <- readRDS('large/NatShann.rds')
 
 
-modelsummary(list("Abundance" = mod_ab, "Species Richness" = mod_n_sr, "Shannon Diversity" = mod_sh),
+modelsummary(list("Abundance" = mod_ab_nat, "Species Richness" = mod_n_sr_nat, "Shannon Diversity" = mod_sh_nat),
              fmt = NULL,
              estimate = "{round(estimate, 2)}",
              exponentiate = c(TRUE, TRUE, FALSE), 
@@ -152,11 +226,33 @@ modelsummary(list("Abundance" = mod_ab, "Species Richness" = mod_n_sr, "Shannon 
 
 ```
 
-Figure 3.
+```{r}
+#| echo: false
+#| eval: true
+#| message: false
+#| warning: false
+#| label: figure-3
+
+# Abundance
+ab_nnat <- basic_plot(mod_ab_nat, condition = c("nnative"), 
+           dat = abp, x = nnative, y = abund,
+           xlab = "Number of Native Flowering Species", ylab = "Butterfly Abundance") 
+
+
+# Shannon
+ab_natcov <- basic_plot(mod_ab_nat, condition = c("avgnatbloom"),
+                    dat = abp, x = avgnatbloom, y = abund,
+                    xlab = "Average Native Bloom Cover", ylab = "Butterfly Abundance") 
+
+ab_nnat + ab_natcov 
+
+```
+
+Figure 3. Native plant community models showing the relationship between butterfly abundance and (a) number of native flowering plant species; (b) average native bloom cover. Points are raw data from individual stormwater pond sites. There are more points than ponds (n = 21) because each pond has values for wetland-specialist and generalist niche breadths. Grey, bands indicate the 95% confidence interval. Plots made using the marginaleffects package and ggplot2 (Arel-Bundock et al., 2024; Wickham et al., 2016).
 
 ## Major Changes
 
-Urbanization models:
+**Urbanization models:**
 
 -   No longer a relationship between abundance and urbanization
 
@@ -164,7 +260,7 @@ Urbanization models:
 
 -   Now a significant effect of urbanization/niche breadth on Shannon
 
-Total plant models:
+**Total plant models:**
 
 -   No longer an effect of number of flowering plant species or niche breadth on abundance
 
@@ -172,10 +268,12 @@ Total plant models:
 
 -   Average bloom cover now has a significant effect on Shannon
 
-Native plant models:
+**Native plant models:**
 
 -   Abundance model no longer has a significant effect/interaction with niche breadth
 
 -   Number of native flowering species no longer has a significant relationship with species richness
 
 # White Cabbage
+
+We want to see how large of an effect the overwhelming abundance of white cabbage is having on our results. I ran all of the same analyses **without** *Pieris rapae* in the dataset:
