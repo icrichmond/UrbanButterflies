@@ -1,11 +1,24 @@
 ---
 title: "Results Revisions 1.0"
-format: html
+format: 
+  html:
+    toc: true
+    embed-resources: true
 ---
 
+```{r}
+#| echo: false
+#| eval: true
+#| warning: false
+#| message: false
+#| label: setup
+
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+
+
+```
+
 # General Notes
-
-
 
 # Rarefaction
 
@@ -28,6 +41,7 @@ Specialists:
 ![](../figures/Specialist_SamplingCov.png)
 
 # Multicollinearity
+
 -   Collinearity was checked before creating models. All explanatory variables have a Pearson correlation score of \< 0.5.
 
 -   VIF scores also look fine, not sure if we want to explicitly report them or just say everything looks good.
@@ -42,13 +56,126 @@ Specialists:
 
 -   I didn't add any interaction terms with sampling area in the models, but we could if we have a hypothesis supporting that. We just need to be wary of overfitting our models as we don't have very many observations.
 
-# Overdispersion 
+# Overdispersion
 
 -   Overdispersion detected in abundance models. I have switched from Poisson to negative binomial to address the issue. New model outputs below.
 
-
 # New Model Results
 
-# White Cabbage
+Table 1. Model summaries of the effect of urbanization on butterfly communities. The first three columns display the results of the model with butterfly abundance as a response, the second three columns with butterfly species richness, and the last three columns with butterfly Shannon diversity. ‘Est’ indicates model estimate; ‘CI’ represents confidence intervals, which are 95 % for all models; ‘p’ indicates the p-value of that row’s variable. The estimates for the abundance model (1st column) are presented as incidence rate ratios (IRRs), where decimal numbers between 0 and 1 indicate negative relationships and numbers 1 and above indicate positive relationships. Anthropogenic Land Cover (%) represents the percentage of anthropogenic land cover surrounding the pond within a 400 m buffer. Niche breadth categories are presented in comparison to the intercept, which is the generalist niche for this table. ‘:’ in the table indicates an interaction effect.
 
-# IRR Issues
+```{r}
+#| echo: false
+#| eval: true
+#| message: false
+#| warning: false
+#| label: table-1
+
+source('script/0-Packages.R')
+
+mod_ab_400 <- readRDS('large/UrbAbund_400.rds')
+mod_n_sr_400 <- readRDS('large/UrbNicheSR_400.rds')
+mod_sh_400 <- readRDS('large/UrbShann_400.rds')
+
+
+modelsummary(list("Abundance" = mod_ab_400, "Species Richness" = mod_n_sr_400, "Shannon Diversity" = mod_sh_400),
+             fmt = NULL,
+             estimate = "{round(estimate, 2)}",
+             exponentiate = c(TRUE, TRUE, FALSE), 
+             statistic = c("CI" = "({round(conf.low, 2)}, {round(conf.high, 2)})", "p-value" = "{signif(p.value, 1)}"),
+             conf_level = .95,
+             shape = term ~ model + statistic,
+             gof_map = NA,
+             coef_rename = c("anthroper_400" = "Anthropogenic Land Cover (%)",
+                             "SamplingArea" = "Site Area (units)",
+                             "Niche.BreadthSpecialist" = "Wetland specialist"))
+
+```
+
+Figure 1. Shannon diversity interaction effect
+
+Table 2. Model summaries of the effect of total plant bloom on butterfly communities. The first three columns display the results of the model with butterfly abundance as a response, the second three columns with butterfly species richness, and the last three columns with butterfly Shannon diversity. ‘Est’ indicates model estimate; ‘CI’ represents confidence intervals, which are 95 % for all models; ‘p’ indicates the p-value of that row’s variable. The estimates for the abundance model (1st column) are presented as incidence rate ratios (IRRs), where decimal numbers between 0 and 1 indicate negative relationships and numbers 1 and above indicate positive relationships. Niche breadth categories are presented in comparison to the intercept, which is the generalist niche for this table. ‘:’ in the table indicates an interaction effect.
+
+```{r}
+#| echo: false
+#| eval: true
+#| label: table-2
+
+
+mod_ab <- readRDS('large/TotAbund.rds')
+mod_n_sr <- readRDS('large/TotNicheSR.rds')
+mod_sh <- readRDS('large/TotShann.rds')
+
+
+modelsummary(list("Abundance" = mod_ab, "Species Richness" = mod_n_sr, "Shannon Diversity" = mod_sh),
+             fmt = NULL,
+             estimate = "{round(estimate, 2)}",
+             exponentiate = c(TRUE, TRUE, FALSE), 
+             statistic = c("CI" = "({round(conf.low, 2)}, {round(conf.high, 2)})", "p-value" = "{signif(p.value, 1)}"),
+             conf_level = .95,
+             shape = term ~ model + statistic,
+             gof_map = NA,
+             coef_rename = c("nspecies" = "Number of Flowering Plant Species",
+                               "avgbloom" = "Average Total Bloom Cover",
+                             "SamplingArea" = "Site Area (units)",
+                               "Niche.BreadthSpecialist" = "Wetland specialist"))
+
+```
+
+Figure 2.
+
+Table 3. Model summaries of the effect of native plant bloom on butterfly communities. The first three columns display the results of the model with butterfly abundance as a response, the second three columns with butterfly species richness, and the last three columns with butterfly Shannon diversity. ‘Est’ indicates model estimate; ‘CI’ represents confidence intervals, which are 95 % for all models; ‘p’ indicates the p-value of that row’s variable. The estimates for the abundance model (1st column) are presented as incidence rate ratios (IRRs), where decimal numbers between 0 and 1 indicate negative relationships and numbers 1 and above indicate positive relationships. Niche breadth categories are presented in comparison to the intercept, which is the generalist niche for this table. ‘:’ in the table indicates an interaction effect.
+
+```{r}
+#| echo: false
+#| eval: true
+#| label: table-3
+
+
+mod_ab <- readRDS('large/NatAbund.rds')
+mod_n_sr <- readRDS('large/NatNicheSR.rds')
+mod_sh <- readRDS('large/NatShann.rds')
+
+
+modelsummary(list("Abundance" = mod_ab, "Species Richness" = mod_n_sr, "Shannon Diversity" = mod_sh),
+             fmt = NULL,
+             estimate = "{round(estimate, 2)}",
+             exponentiate = c(TRUE, TRUE, FALSE), 
+             statistic = c("CI" = "({round(conf.low, 2)}, {round(conf.high, 2)})", "p-value" = "{signif(p.value, 1)}"),
+             conf_level = .95,
+             shape = term ~ model + statistic,
+             gof_map = NA,
+             coef_rename = c("nnative" = "Number of Native Flowering Species",
+                             "avgnatbloom" = "Average Native Bloom Cover",
+                             "SamplingArea" = "Site Area (units)",
+                             "Niche.BreadthSpecialist" = "Wetland specialist"))
+
+```
+
+Figure 3.
+
+## Major Changes
+
+Urbanization models:
+
+-   No longer a relationship between abundance and urbanization
+
+-   Now a significant interaction effect with species richness and urbanization/niche breadth
+
+-   Now a significant effect of urbanization/niche breadth on Shannon
+
+Total plant models:
+
+-   No longer an effect of number of flowering plant species or niche breadth on abundance
+
+-   Now a significant effect of number of flowering plant species and average bloom cover on species richness
+
+-   Average bloom cover now has a significant effect on Shannon
+
+Native plant models:
+
+-   Abundance model no longer has a significant effect/interaction with niche breadth
+
+-   Number of native flowering species no longer has a significant relationship with species richness
+
+# White Cabbage
