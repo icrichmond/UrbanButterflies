@@ -42,7 +42,7 @@ saveRDS(mod_sh, 'large/NatShann.rds')
 modelsummary(list("Abundance" = mod_ab, "Species Richness" = mod_n_sr, "Shannon Diversity" = mod_sh),
              fmt = NULL,
              estimate = "{round(estimate, 2)}",
-             exponentiate = c(TRUE, TRUE, FALSE), 
+             exponentiate = c(TRUE, FALSE, FALSE), 
              statistic = c("({round(conf.low, 2)}, {round(conf.high, 2)})", "{signif(p.value, 1)}"),
              conf_level = .95,
              shape = term ~ model + statistic,
