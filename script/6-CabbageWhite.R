@@ -127,4 +127,4 @@ gen_3 <- ggiNEXT(outrich_gen, type= 3) + theme(legend.position = 'none')
 
 gen_fig <- gen_1 | gen_2 | gen_3
 
-ggsave('figures/Generalist_SamplingCov_noCW.png', gen_fig, width = 15, height = 10, units = 'in')
+ggsave('figures/Generalist_SamplingCov_noCW.png', gen_fig, width = 15, height = 15, units = 'in')

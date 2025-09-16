@@ -1,9 +1,8 @@
 ---
 title: "Results Revisions 1.0"
 format: 
-  html:
+  docx:
     toc: true
-    embed-resources: true
     fig-width: 12
     fig-height: 12
 ---
@@ -81,10 +80,12 @@ modelsummary(list("Abundance" = mod_ab_400, "Species Richness" = mod_n_sr_400, "
              fmt = NULL,
              estimate = "{signif(estimate, 2)}",
              exponentiate = c(TRUE, FALSE, FALSE), 
-             statistic = c("CI" = "({signif(conf.low, 2)}, {signif(conf.high, 2)})", "p-value" = "{signif(p.value, 1)}"),
+             statistic = c("CI" = "({signif(conf.low, 2)}, {signif(conf.high, 2)})", 
+                           "t-statistic" =  "{signif(statistic, 2)}", 
+                           "p-value" = "{signif(p.value, 1)}"),
              conf_level = .95,
              shape = term ~ model + statistic,
-             gof_map = NA,
+             gof_map = c( "r2.nagelkerke", "adj.r.squared", "adj.r.squared"),
              coef_rename = c("anthroper_400" = "Anthropogenic Land Cover (%)",
                              "SamplingArea" = "Site Area (units)",
                              "Niche.BreadthSpecialist" = "Wetland specialist"))
@@ -96,6 +97,8 @@ modelsummary(list("Abundance" = mod_ab_400, "Species Richness" = mod_n_sr_400, "
 #| eval: true
 #| message: false
 #| warning: false
+#| fig-width: 10
+#| fig-height: 10
 #| label: figure-1
 
 source('script/function-BasicPlot.R')
@@ -147,10 +150,12 @@ modelsummary(list("Abundance" = mod_ab_tot, "Species Richness" = mod_n_sr_tot, "
              fmt = NULL,
              estimate = "{signif(estimate, 2)}",
              exponentiate = c(TRUE, FALSE, FALSE), 
-             statistic = c("CI" = "({signif(conf.low, 2)}, {signif(conf.high, 2)})", "p-value" = "{signif(p.value, 1)}"),
+             statistic = c("CI" = "({signif(conf.low, 2)}, {signif(conf.high, 2)})", 
+                           "t-statistic" =  "{signif(statistic, 2)}",
+                           "p-value" = "{signif(p.value, 1)}"),
              conf_level = .95,
              shape = term ~ model + statistic,
-             gof_map = NA,
+             gof_map = c( "r2.nagelkerke", "adj.r.squared", "adj.r.squared"),
              coef_rename = c("nspecies" = "Number of Flowering Plant Species",
                                "avgbloom" = "Average Total Bloom Cover",
                              "SamplingArea" = "Site Area (units)",
@@ -163,6 +168,8 @@ modelsummary(list("Abundance" = mod_ab_tot, "Species Richness" = mod_n_sr_tot, "
 #| eval: true
 #| message: false
 #| warning: false
+#| fig-width: 10
+#| fig-height: 10
 #| label: figure-2
 
 # Abundance
@@ -215,10 +222,12 @@ modelsummary(list("Abundance" = mod_ab_nat, "Species Richness" = mod_n_sr_nat, "
              fmt = NULL,
              estimate = "{signif(estimate, 2)}",
              exponentiate = c(TRUE, FALSE, FALSE), 
-             statistic = c("CI" = "({signif(conf.low, 2)}, {signif(conf.high, 2)})", "p-value" = "{signif(p.value, 1)}"),
+             statistic = c("CI" = "({signif(conf.low, 2)}, {signif(conf.high, 2)})",
+                           "t-statistic" =  "{signif(statistic, 2)}",
+                           "p-value" = "{signif(p.value, 1)}"),
              conf_level = .95,
              shape = term ~ model + statistic,
-             gof_map = NA,
+             gof_map = c( "r2.nagelkerke", "adj.r.squared", "adj.r.squared"),
              coef_rename = c("nnative" = "Number of Native Flowering Species",
                              "avgnatbloom" = "Average Native Bloom Cover",
                              "SamplingArea" = "Site Area (units)",
@@ -231,6 +240,8 @@ modelsummary(list("Abundance" = mod_ab_nat, "Species Richness" = mod_n_sr_nat, "
 #| eval: true
 #| message: false
 #| warning: false
+#| fig-width: 10
+#| fig-height: 10
 #| label: figure-3
 
 # Abundance
@@ -308,10 +319,12 @@ modelsummary(list("Abundance" = mod_ab_400_cw, "Species Richness" = mod_n_sr_400
              fmt = NULL,
              estimate = "{signif(estimate, 2)}",
              exponentiate = c(TRUE, FALSE, FALSE), 
-             statistic = c("CI" = "({signif(conf.low, 2)}, {signif(conf.high, 2)})", "p-value" = "{signif(p.value, 1)}"),
+             statistic = c("CI" = "({signif(conf.low, 2)}, {signif(conf.high, 2)})", 
+                           "t-statistic" =  "{signif(statistic, 2)}", 
+                           "p-value" = "{signif(p.value, 1)}"),
              conf_level = .95,
              shape = term ~ model + statistic,
-             gof_map = NA,
+             gof_map = c( "r2.nagelkerke", "adj.r.squared", "adj.r.squared"),
              coef_rename = c("anthroper_400" = "Anthropogenic Land Cover (%)",
                              "SamplingArea" = "Site Area (units)",
                              "Niche.BreadthSpecialist" = "Wetland specialist"))
@@ -347,10 +360,12 @@ modelsummary(list("Abundance" = mod_ab_cw, "Species Richness" = mod_n_sr_cw, "Sh
              fmt = NULL,
              estimate = "{signif(estimate, 2)}",
              exponentiate = c(TRUE, FALSE, FALSE), 
-             statistic = c("CI" = "({signif(conf.low, 2)}, {signif(conf.high, 2)})", "p-value" = "{signif(p.value, 1)}"),
+             statistic = c("CI" = "({signif(conf.low, 2)}, {signif(conf.high, 2)})",  
+                           "t-statistic" =  "{signif(statistic, 2)}",
+                           "p-value" = "{signif(p.value, 1)}"),
              conf_level = .95,
              shape = term ~ model + statistic,
-             gof_map = NA,
+             gof_map = c( "r2.nagelkerke", "adj.r.squared", "adj.r.squared"),
              coef_rename = c("nspecies" = "Number of Flowering Plant Species",
                                "avgbloom" = "Average Total Bloom Cover",
                              "SamplingArea" = "Site Area (units)",
@@ -377,10 +392,12 @@ modelsummary(list("Abundance" = mod_ab_nat_cw, "Species Richness" = mod_n_sr_nat
              fmt = NULL,
              estimate = "{signif(estimate, 2)}",
              exponentiate = c(TRUE, FALSE, FALSE), 
-             statistic = c("CI" = "({signif(conf.low, 2)}, {signif(conf.high, 2)})", "p-value" = "{signif(p.value, 1)}"),
+             statistic = c("CI" = "({signif(conf.low, 2)}, {signif(conf.high, 2)})",  
+                           "t-statistic" =  "{signif(statistic, 2)}",
+                           "p-value" = "{signif(p.value, 1)}"),
              conf_level = .95,
              shape = term ~ model + statistic,
-             gof_map = NA,
+             gof_map = c( "r2.nagelkerke", "adj.r.squared", "adj.r.squared"),
              coef_rename = c("nspecies" = "Number of Flowering Plant Species",
                                "avgbloom" = "Average Total Bloom Cover",
                              "SamplingArea" = "Site Area (units)",

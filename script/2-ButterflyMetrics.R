@@ -29,9 +29,9 @@ buttsp <- mutate(buttsp, SpeciesCode = toupper(paste0(str_sub(Genus, 1, 3), "", 
 # Abundance ---------------------------------------------------------------
 
 # separate columns with species names so they can be replaced with species codes
-buttab1 <- select(buttraw, `Scientific Name`) %>% 
+buttab1 <- dplyr::select(buttraw, `Scientific Name`) %>% 
   rename(SWP = `Scientific Name`)
-buttab2 <- select(buttraw, -`Scientific Name`)
+buttab2 <- dplyr::select(buttraw, -`Scientific Name`)
 names(buttab2) <- buttsp$SpeciesCode[match(names(buttab2), buttsp$ScientificNames)]
 # bind datasets back together 
 buttab <- cbind(buttab1, buttab2)
@@ -138,7 +138,7 @@ gen_3 <- ggiNEXT(outrich_gen, type= 3) + theme(legend.position = 'none')
 
 gen_fig <- gen_1 | gen_2 | gen_3
 
-ggsave('figures/Generalist_SamplingCov.png', gen_fig, width = 15, height = 10, units = 'in')
+ggsave('figures/Generalist_SamplingCov.png', gen_fig, width = 15, height = 15, units = 'in')
 
 spec_1 <- ggiNEXT(outrich_spec, type= 1) + theme(legend.position = 'none')
 spec_2 <- ggiNEXT(outrich_spec, type= 2) + theme(legend.position = 'none')
@@ -146,5 +146,5 @@ spec_3 <- ggiNEXT(outrich_spec, type= 3) + theme(legend.position = 'none')
 
 spec_fig <- spec_1 | spec_2 | spec_3
 
-ggsave('figures/Specialist_SamplingCov.png', spec_fig, width = 15, height = 10, units = 'in')
+ggsave('figures/Specialist_SamplingCov.png', spec_fig, width = 15, height = 15, units = 'in')
 
