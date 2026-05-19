@@ -50,15 +50,10 @@ sh_an <- basic_plot(
   scale_x_continuous(breaks = c(0, 0.25, 0.5, .75), labels = c(0, 25, 50, 75)) +
   theme(legend.position = 'top')
 
-urb <- guide_area() /
-  (sr_an |
-    sh_an) +
-  plot_annotation(tag_levels = 'a', tag_suffix = ')') +
-  plot_layout(
-    guides = 'collect',
-    widths = c(1, 1),
-    heights = c(1, 8)
-  )
+urb <- sr_an +
+  sh_an +
+  plot_layout(guides = 'collect') &
+  theme(legend.position = "top")
 
 # Save --------------------------------------------------------------------
 ggsave(
