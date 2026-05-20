@@ -113,12 +113,27 @@ rarediv <- rbind(rarediv_gen, rarediv_spec) %>%
          Simpson = qD.2)
 
 # abundance
-buttab_site <- buttab %>%
-  group_by(SWP) %>% 
-  summarise(abund = sum(across(HESSP:DANPLE), na.rm = T))
-buttab_site$SWP <- as.character(buttab_site$SWP)
+gen_ab <- as.data.frame(t(nextgendl)) %>% 
+  mutate(abund = rowSums(.),
+         Niche.Breadth = "Generalist") %>% 
+  rownames_to_column(var = 'SWP') %>% 
+  select(c(SWP, Niche.Breadth, abund))
+
+spec_ab <- as.data.frame(t(nextspecdl)) %>% 
+  mutate(abund = rowSums(.),
+         Niche.Breadth = "Specialist") %>% 
+  rownames_to_column(var = 'SWP') %>% 
+  right_join(., gen_ab, by = "SWP", suffix = c("", "_gen")) %>% 
+  mutate(abund = replace_na(abund, 0)) %>% 
+  select(c(SWP, Niche.Breadth, abund)) 
+
+
+abund <- rbind(gen_ab, spec_ab) %>% 
+  mutate(Niche.Breadth = replace_na(Niche.Breadth, "Specialist"))
+
 # join all metrics
-butt_site <- inner_join(buttab_site, rarediv)
+butt_site <- left_join(abund, rarediv) %>% 
+  replace_na(list(SpeciesRichness = 0, Shannon = 0))
 
 
 
