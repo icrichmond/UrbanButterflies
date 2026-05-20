@@ -8,7 +8,7 @@ plant <- read.csv('output/PlantCleanbySite.csv') %>%
 butt <- read.csv('output/ButterflyCleanbySite.csv')
 anthro <- st_read("output/AnthroFull.gpkg") %>% 
   st_drop_geometry() %>% 
-  dplyr::select(c(Pond, SamplingArea))
+  select(c(Pond, SamplingArea))
 
 pb <- inner_join(plant, butt, by = join_by("Pond" == "SWP")) %>% 
   inner_join(., anthro)

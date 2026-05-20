@@ -1,10 +1,11 @@
 ---
-title: "Results Revisions 1.0"
+title: "Results Revisions 1.0 + Added Zeroes in Specialists"
 format: 
-  docx:
+  html:
     toc: true
     fig-width: 12
     fig-height: 12
+    embed-resources: true
 ---
 
 ```{r}
