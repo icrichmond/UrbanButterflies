@@ -75,7 +75,8 @@ sh_ntot <- basic_plot(
 
 sh_cov <- basic_plot(
   mod_sh_tot,
-  condition = c("avgbloom"),
+  condition = c("avgbloom", "Niche.Breadth"),
+  colour = Niche.Breadth,
   dat = abp,
   x = avgbloom,
   y = Shannon,
